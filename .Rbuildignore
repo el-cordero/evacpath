@@ -1,0 +1,8 @@
+^README\.Rmd$
+^\.github$
+^data-raw$
+^.*\.Rproj$
+^\.Rproj\.user$
+^jakarta-example-diagnostics\.Rmd$
+^doc$
+^Meta$

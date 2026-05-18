@@ -1,0 +1,76 @@
+---
+title: "Using evacpath in a new region"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using evacpath in a new region}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+For a new region, `evacpath` expects three core spatial inputs:
+
+1. a hazard or inundation zone,
+2. a road/pathway network, and
+3. a DEM or elevation raster.
+
+The most important requirement is that distance calculations should use a projected coordinate reference system in meters.
+
+```{r setup}
+library(evacpath)
+```
+
+## Minimal workflow
+
+```{r minimal}
+result <- run_evacpath(
+  hazard_zone = "path/to/hazard_zone.gpkg",
+  roads = "path/to/roads.gpkg",
+  dem = "path/to/dem.tif",
+  target_crs = "EPSG:XXXX",
+  region_name = "New region",
+  walking_speed_mps = 1.22
+)
+```
+
+## Common customizations
+
+```{r custom}
+result <- run_evacpath(
+  hazard_zone = "path/to/hazard_zone.gpkg",
+  roads = "path/to/roads.gpkg",
+  dem = "path/to/dem.tif",
+  target_crs = "EPSG:XXXX",
+  region_name = "New region",
+
+  # Road and escape-point geometry assumptions
+  road_buffer_m = 2,
+  escape_buffer_m = 5,
+  final_road_buffer_m = 3,
+
+  # Origin-point density
+  grid_resolution = 50,
+  max_origins = NULL,
+
+  # Travel-time assumption
+  walking_speed_mps = 1.22,
+
+  # Output clipping
+  clip_mode = "road_hazard"
+)
+```
+
+## Case-specific preprocessing
+
+Keep region-specific choices outside the package. For example, if your DEM uses negative elevation for land, correct it before calling `run_evacpath()`. If your road layer contains piers or other unsuitable features, remove them with `clean_roads()`.
+
+```{r preprocessing}
+roads <- clean_roads(
+  roads = "path/to/roads.gpkg",
+  exclude = list(field = "road_type", values = c("pier", "private")),
+  target_crs = "EPSG:XXXX"
+)
+```
