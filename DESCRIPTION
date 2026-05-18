@@ -1,18 +1,16 @@
 Package: evacpath
 Title: Least-Cost Pedestrian Evacuation Modeling
-Version: 0.1.0.9006
+Version: 0.1.0
 Authors@R: c(
     person("Elvin", "Cordero", role = c("aut", "cre"), email = "elvin.cordero1@upr.edu")
   )
-Author: Elvin Cordero
-Maintainer: Elvin Cordero <elvin.cordero1@upr.edu>
 Description: Tools for road-constrained, least-cost pedestrian evacuation modeling.
     The package provides reusable functions for preparing hazard zones, generating
     road-based evacuation origin points, identifying escape/safety points, creating
     slope-based conductance surfaces, calculating least-cost distance to safety,
     and converting distance outputs into evacuation-time polygons. It is designed
-    to support workflows like tsunami evacuation modeling while remaining adaptable
-    to other regions and hazards. Tsunami-specific helpers support separate
+    to support workflows like tsunami evacuation modeling while remaining
+    adaptable to other regions and hazards. Tsunami-specific helpers support separate
     land-only hazard zones, water-combined escape zones, road-aware escape
     boundaries, and study-area inset cropping for escape-point QA/QC.
 License: MIT + file LICENSE
@@ -33,5 +31,3 @@ Suggests:
     fields
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-URL: https://github.com/el-cordero/evacpath
-BugReports: https://github.com/el-cordero/evacpath/issues

@@ -12,8 +12,5 @@
 #' exits, `make_conductance_surface()` to build a slope-based conductance surface,
 #' and `run_evacpath()` to run the full workflow.
 #'
-#' @docType package
-#' @name evacpath
-#' @aliases evacpath-package
 #' @keywords package
-NULL
+"_PACKAGE"

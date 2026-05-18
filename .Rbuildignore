@@ -9,3 +9,4 @@
 ^Meta$
 ^_outputs$
 ^vignettes/_outputs$
+^cran-comments\.md$
