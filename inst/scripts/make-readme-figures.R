@@ -57,7 +57,7 @@ roads_for_escape <- crop_roads_to_inner_extent(
   roads = roads,
   zone = escape_zone,
   inset_x_m = 0,
-  inset_y_m = 0
+  inset_y_m = 300
 )
 
 escape_boundary_zone <- make_road_aware_escape_zone(
@@ -88,7 +88,7 @@ plot(
   border = "grey70",
   main = "Example Hazard Zone, Roads, and Escape Points",
   cex.main = 1.1,
-  axes = TRUE
+  axes = FALSE
 )
 plot(hazard_zone, add = TRUE, col = "#f28e2b99", border = NA)
 plot(roads, add = TRUE, col = "#333333", lwd = 0.5)
@@ -98,7 +98,7 @@ dev.off()
 result <- run_evacpath(
   hazard_zone = hazard_zone,
   escape_zone = escape_zone,
-  roads = roads,
+  roads = roads_for_escape,
   dem = dem,
   target_crs = target_crs,
   road_buffer_m = 2,
@@ -107,7 +107,7 @@ result <- run_evacpath(
   escape_roads_inset_x_m = 0,
   escape_roads_inset_y_m = 0,
   road_aware_escape_zone = TRUE,
-  max_origins = 500,
+  max_origins = 300,
   max_destinations = 100,
   seed = 23401,
   walking_speed_mps = 1.22,
@@ -129,13 +129,14 @@ par(mar = c(3, 3, 3, 5), mgp = c(1.8, 0.6, 0), las = 1, bg = "white")
 plot(
   time_window,
   "EvacTimeAvg",
+  axes = FALSE,
   ext = readme_extent,
-  col = hcl.colors(7, "YlOrRd", rev = TRUE),
+  col = hcl.colors(5, "YlOrRd", rev = TRUE),
   border = NA,
   main = "Example Modeled Evacuation Time",
   cex.main = 1.1,
   plg = list(title = "Minutes", cex = 0.8, title.cex = 0.85)
 )
 plot(result_roads_window, add = TRUE, col = "#33333380", lwd = 0.35)
-plot(result_escape_window, add = TRUE, pch = 22, bg = "#e15759", col = "black", cex = 0.65)
+plot(escape_points_window, add = TRUE, pch = 22, bg = "#e15759", col = "black", cex = 0.65)
 dev.off()

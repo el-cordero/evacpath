@@ -1,4 +1,4 @@
-# evacpath
+# evacpath <img src="man/figures/logo.png" align="right" height="140" alt="evacpath logo" />
 
 `evacpath` is an R package for road-constrained pedestrian evacuation modeling using least-cost path analysis. It takes generic hazard, road/pathway, and elevation inputs, then returns distance-to-safety and evacuation-time outputs for any projected study area.
 
