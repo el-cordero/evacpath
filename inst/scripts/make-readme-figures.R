@@ -20,9 +20,17 @@ output_dir <- file.path("man", "figures")
 
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
-dem <- rast(system.file("extdata/dem.tif", package = "evacpath"))
+focus_area <- as.polygons(readme_extent, crs = target_crs)
+
+dem_raw <- rast(system.file("extdata/dem.tif", package = "evacpath"))
 roads_raw <- vect(system.file("extdata/rds.gpkg", package = "evacpath"))
-inundation <- rast(system.file("extdata/tsunami_inundation_depth.tif", package = "evacpath"))
+inundation_raw <- rast(system.file("extdata/tsunami_inundation_depth.tif", package = "evacpath"))
+
+# Crop the raw source data first, before preparing zones or running the model.
+focus_area_source <- project(focus_area, crs(dem_raw))
+dem <- crop(dem_raw, focus_area_source)
+inundation <- crop(inundation_raw, focus_area_source)
+roads_raw <- crop(roads_raw, focus_area_source)
 
 zones <- prepare_tsunami_zones(
   inundation = inundation,
@@ -40,20 +48,20 @@ roads <- clean_roads(
   target_crs = target_crs
 )
 
-hazard_window <- crop(zones$hazard_zone, readme_extent)
-escape_window <- crop(zones$escape_zone, readme_extent)
-dem_window <- crop(zones$dem, readme_extent)
-roads_window <- crop(roads, readme_extent)
+hazard_zone <- crop(zones$hazard_zone, readme_extent)
+escape_zone <- crop(zones$escape_zone, readme_extent)
+dem <- crop(zones$dem, readme_extent)
+roads <- crop(roads, readme_extent)
 
 roads_for_escape <- crop_roads_to_inner_extent(
-  roads = roads_window,
-  zone = escape_window,
+  roads = roads,
+  zone = escape_zone,
   inset_x_m = 0,
   inset_y_m = 0
 )
 
 escape_boundary_zone <- make_road_aware_escape_zone(
-  escape_zone = escape_window,
+  escape_zone = escape_zone,
   roads = roads_for_escape,
   road_buffer_m = 2,
   crop_buffer_m = 3
@@ -74,7 +82,7 @@ png(
 )
 par(mar = c(3, 3, 3, 1), mgp = c(1.8, 0.6, 0), las = 1, bg = "white")
 plot(
-  escape_window,
+  escape_zone,
   ext = readme_extent,
   col = "grey94",
   border = "grey70",
@@ -82,16 +90,16 @@ plot(
   cex.main = 1.1,
   axes = TRUE
 )
-plot(hazard_window, add = TRUE, col = "#f28e2b99", border = NA)
-plot(roads_window, add = TRUE, col = "#333333", lwd = 0.5)
+plot(hazard_zone, add = TRUE, col = "#f28e2b99", border = NA)
+plot(roads, add = TRUE, col = "#333333", lwd = 0.5)
 plot(escape_points_window, add = TRUE, pch = 22, bg = "#e15759", col = "black", cex = 0.7)
 dev.off()
 
 result <- run_evacpath(
-  hazard_zone = hazard_window,
-  escape_zone = escape_window,
-  roads = roads_window,
-  dem = dem_window,
+  hazard_zone = hazard_zone,
+  escape_zone = escape_zone,
+  roads = roads,
+  dem = dem,
   target_crs = target_crs,
   road_buffer_m = 2,
   escape_buffer_m = 5,
