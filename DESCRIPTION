@@ -4,6 +4,8 @@ Version: 0.1.0.9006
 Authors@R: c(
     person("Elvin", "Cordero", role = c("aut", "cre"), email = "elvin@example.com")
   )
+Author: Elvin Cordero
+Maintainer: Elvin Cordero <elvin@example.com>
 Description: Tools for road-constrained, least-cost pedestrian evacuation modeling.
     The package provides reusable functions for preparing hazard zones, generating
     road-based evacuation origin points, identifying escape/safety points, creating

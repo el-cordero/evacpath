@@ -214,14 +214,3 @@ make_evac_polygons <- function(
 
   v
 }
-
-#' Backward-compatible alias for minimum-distance calculation
-#'
-#' @param cs Conductance surface.
-#' @param origins Origin points.
-#' @param destinations Escape/safety points.
-#' @return A point `SpatVector` with distance values.
-#' @export
-min_dist <- function(cs, origins, destinations) {
-  calc_min_distance_to_safety(cs, origins, destinations)
-}

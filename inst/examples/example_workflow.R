@@ -1,6 +1,6 @@
-# Jakarta example workflow ---------------------------------------------------
+# Example workflow ---------------------------------------------------
 # This is a compact version of the diagnostic workflow. For full QA/QC, see
-# jakarta-example-diagnostics.Rmd or vignettes/jakarta-example.Rmd.
+# diagnostic-example.Rmd or vignettes/diagnostic-example.Rmd.
 
 library(terra)
 library(evacpath)
@@ -10,15 +10,15 @@ tsunami <- rast("_data/raw/inundation.nc")
 dem <- rast("_data/raw/topo.nc")
 roads <- vect("_data/raw/road.shp")
 
-crs_jak <- "EPSG:32748"
+target_crs <- "EPSG:32748"
 
-# ---- Jakarta-specific preprocessing ---------------------------------------
+# ---- Example-specific preprocessing ---------------------------------------
 # Change dem_sign_multiplier to -1 if your topobathymetry sign convention is
 # reversed relative to land > 0 and water < 0.
 zones <- prepare_tsunami_zones(
   inundation = tsunami,
   dem = dem,
-  target_crs = crs_jak,
+  target_crs = target_crs,
   dem_sign_multiplier = 1,
   inundation_threshold = 0
 )
@@ -26,7 +26,7 @@ zones <- prepare_tsunami_zones(
 roads <- clean_roads(
   roads,
   exclude = list(field = "man_made", values = "pier"),
-  target_crs = crs_jak
+  target_crs = target_crs
 )
 
 # Crop roads used only for escape-point detection to avoid artificial study-area
@@ -56,8 +56,8 @@ result <- run_evacpath(
   escape_zone = zones$escape_zone,
   roads = roads,
   dem = zones$dem,
-  target_crs = crs_jak,
-  region_name = "Jakarta",
+  target_crs = target_crs,
+  region_name = "Example region",
   grid_resolution = terra::res(zones$dem) * 50,
   dem_resolution = terra::res(zones$dem) * 50,
   road_buffer_m = 2,
@@ -79,6 +79,6 @@ plot(result$escape_points, add = TRUE, pch = 22, bg = "red", col = "black")
 
 write_evac_outputs(
   result,
-  output_dir = "_outputs/jakarta",
-  prefix = "jakarta"
+  output_dir = "_outputs/example",
+  prefix = "example"
 )

@@ -65,23 +65,3 @@ interpolate_distance_surface <- function(
   dist_grid <- terra::crop(dist_grid, study_area)
   terra::mask(dist_grid, study_area)
 }
-
-#' Backward-compatible alias for the original distance grid function
-#'
-#' @param minDist.pnts Minimum-distance points.
-#' @param area.region Region area.
-#' @param area.study Study area.
-#' @param res.1 Coarse interpolation resolution.
-#' @param res.2 Fine output resolution.
-#' @return A `SpatRaster` distance surface.
-#' @export
-distance_grid <- function(minDist.pnts, area.region, area.study, res.1 = 100, res.2 = 1) {
-  interpolate_distance_surface(
-    distance_points = minDist.pnts,
-    region_area = area.region,
-    study_area = area.study,
-    resolution_coarse = res.1,
-    resolution_fine = res.2,
-    distance_col = "distance"
-  )
-}

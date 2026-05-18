@@ -4,12 +4,21 @@
 \alias{make_road_origins}
 \title{Create road-based origin points inside the evacuation zone}
 \usage{
-make_road_origins(evac_grid, roads_buffer, max_origins = NULL, seed = 23401)
+make_road_origins(
+  evac_grid,
+  roads_buffer,
+  hazard_zone = NULL,
+  max_origins = NULL,
+  seed = NULL
+)
 }
 \arguments{
 \item{evac_grid}{Polygon grid from \code{make_evac_grid()}.}
 
 \item{roads_buffer}{Buffered road/pathway network.}
+
+\item{hazard_zone}{Optional hazard-zone polygon used to crop candidate
+origins after intersecting the grid with the road buffer.}
 
 \item{max_origins}{Optional maximum number of origin points to retain. Useful
 for large regions or exploratory runs.}

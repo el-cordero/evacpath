@@ -50,6 +50,8 @@ make_road_mask <- function(
 #'
 #' @param evac_grid Polygon grid from `make_evac_grid()`.
 #' @param roads_buffer Buffered road/pathway network.
+#' @param hazard_zone Optional hazard-zone polygon used to crop candidate
+#'   origins after intersecting the grid with the road buffer.
 #' @param max_origins Optional maximum number of origin points to retain. Useful
 #'   for large regions or exploratory runs.
 #' @param seed Random seed used when `max_origins` is supplied.

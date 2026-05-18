@@ -1,6 +1,6 @@
 # evacpath
 
-`evacpath` is a starter R package for road-constrained pedestrian evacuation modeling using least-cost path analysis. It was created from the original tsunami evacuation scripts and the newer Jakarta workflow, with the main hard-coded assumptions converted into function arguments.
+`evacpath` is an R package for road-constrained pedestrian evacuation modeling using least-cost path analysis. It takes generic hazard, road/pathway, and elevation inputs, then returns distance-to-safety and evacuation-time outputs for any projected study area.
 
 The package is designed around a simple idea:
 
@@ -16,11 +16,11 @@ This is an initial package scaffold, not a polished CRAN release. It is ready fo
 library(evacpath)
 
 result <- run_evacpath(
-  hazard_zone = "_data/tsunami_inundation_zone.tif",
-  roads = "_data/rds.gpkg",
-  dem = "_data/dem.tif",
-  target_crs = "EPSG:32748",
-  region_name = "Jakarta",
+  hazard_zone = "path/to/hazard_zone.tif",
+  roads = "path/to/roads.gpkg",
+  dem = "path/to/dem.tif",
+  target_crs = "EPSG:XXXX",
+  region_name = "Study area",
   road_buffer_m = 2,
   escape_buffer_m = 5,
   final_road_buffer_m = 3,
@@ -36,8 +36,8 @@ result$distance_points
 
 write_evac_outputs(
   result,
-  output_dir = "_outputs/jakarta",
-  prefix = "jakarta"
+  output_dir = "outputs",
+  prefix = "study_area"
 )
 ```
 
@@ -60,14 +60,14 @@ write_evac_outputs(
 | `run_evacpath()` | Runs the full workflow. |
 | `write_evac_outputs()` | Writes the main outputs to disk. |
 
-## Important customizable assumptions
+## Customizable assumptions
 
-The original scripts contained several hard-coded assumptions. In `evacpath`, these are parameters:
+Most modeling assumptions are explicit parameters:
 
 ```r
 run_evacpath(
   ...,
-  target_crs = "EPSG:32748",
+  target_crs = "EPSG:XXXX",
   grid_resolution = NULL,
   grid_resolution_factor = 5,
   road_buffer_m = 2,
@@ -80,30 +80,30 @@ run_evacpath(
 )
 ```
 
-## Jakarta / tsunami preprocessing example
+## Tsunami preprocessing
 
-The Jakarta workflow needs two tsunami zones. The land-only inundation zone is used for origins and mapping. A second zone combines the land inundation footprint with water so that the coastline is not treated as an artificial escape boundary.
+Some coastal workflows need two tsunami zones. The land-only inundation zone is used for origins and mapping. A second zone combines the land inundation footprint with water so that the coastline is not treated as an artificial escape boundary.
 
 ```r
 library(terra)
 library(evacpath)
 
-tsunami <- rast("_data/raw/inundation.nc")
-dem <- rast("_data/raw/topo.nc")
-roads <- vect("_data/raw/road.shp")
+tsunami <- rast("path/to/inundation.nc")
+dem <- rast("path/to/topography.nc")
+roads <- vect("path/to/roads.shp")
 
 zones <- prepare_tsunami_zones(
   inundation = tsunami,
   dem = dem,
-  target_crs = "EPSG:32748",
+  target_crs = "EPSG:XXXX",
   inundation_threshold = 0,
   dem_sign_multiplier = 1
 )
 
 roads <- clean_roads(
   roads,
-  exclude = list(field = "man_made", values = "pier"),
-  target_crs = "EPSG:32748"
+  exclude = list(field = "road_type", values = "pier"),
+  target_crs = "EPSG:XXXX"
 )
 
 result <- run_evacpath(
@@ -111,35 +111,13 @@ result <- run_evacpath(
   escape_zone = zones$escape_zone,  # TEZ + water for true inland escape boundary
   roads = roads,
   dem = zones$dem,
-  target_crs = "EPSG:32748",
-  region_name = "Jakarta",
+  target_crs = "EPSG:XXXX",
+  region_name = "Study area",
   max_origins = 2000
 )
 ```
 
 Do not use the land-only `hazard_zone` to find escape points in tsunami workflows unless you intentionally want the coastline to act as a boundary. In most tsunami cases, use `escape_zone = zones$escape_zone`.
-
-## Backward-compatible function names
-
-The original script function names are still available as wrappers:
-
-```r
-evacuation_grid()
-region_area()
-escape_points()
-min_dist()
-distance_grid()
-```
-
-However, new work should use the clearer package functions:
-
-```r
-make_evac_grid()
-make_region_area()
-find_escape_points()
-calc_min_distance_to_safety()
-interpolate_distance_surface()
-```
 
 ## Local development
 
@@ -168,21 +146,36 @@ devtools::check("evacpath")
 By default, `run_evacpath()` now clips `result$evac_polygons` / `result$time_grid` to the full hazard zone, not just the buffered road network. Movement is still calculated using the road-constrained conductance surface, but the mapped time grid is a Voronoi-style surface over the hazard/inundation zone. Use `clip_mode = "road_hazard"` only when you want the older road-buffer-limited output.
 
 
-## Jakarta diagnostic workflow
+## Example data and figures
 
-The most detailed example is available in two places:
+Small example inputs are included in `inst/extdata/`:
 
 ```text
-jakarta-example-diagnostics.Rmd
-vignettes/jakarta-example.Rmd
+inst/extdata/dem.tif
+inst/extdata/rds.gpkg
+inst/extdata/tsunami_inundation_depth.tif
 ```
 
-The diagnostic walks through each major function separately, including tsunami-specific zone preparation, inset cropping of roads used for escape-point detection, road-aware escape-boundary generation, least-cost-path testing, and final time-grid mapping.
+These files are from the Jakarta example dataset and are used only to demonstrate how to load package data:
+
+```r
+dem <- terra::rast(system.file("extdata/dem.tif", package = "evacpath"))
+roads <- terra::vect(system.file("extdata/rds.gpkg", package = "evacpath"))
+inundation <- terra::rast(system.file("extdata/tsunami_inundation_depth.tif", package = "evacpath"))
+```
+
+The detailed diagnostic example is available at `vignettes/diagnostic-example.Rmd` and `inst/examples/diagnostic-example.Rmd`. It walks through each major function separately, including tsunami-specific zone preparation, inset cropping of roads used for escape-point detection, road-aware escape-boundary generation, least-cost-path testing, and final time-grid mapping.
+
+![Roads cropped to an inset extent for escape detection](man/figures/example-roads-inset.png)
+
+![Road-constrained movement mask](man/figures/example-road-mask.png)
+
+![Modeled pedestrian evacuation time](man/figures/example-evacuation-time.png)
 
 For tsunami workflows, the preferred escape-point pattern is:
 
 ```r
-zones <- prepare_tsunami_zones(inundation, dem, target_crs = crs_jak)
+zones <- prepare_tsunami_zones(inundation, dem, target_crs = target_crs)
 
 roads_for_escape <- crop_roads_to_inner_extent(
   roads = roads,

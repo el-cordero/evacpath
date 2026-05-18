@@ -1,12 +1,12 @@
 ---
-title: "Jakarta evacuation workflow: function-by-function diagnostics"
+title: "Evacuation workflow: function-by-function diagnostics"
 output: rmarkdown::html_vignette
 params:
   run_diagnostics: false
   run_lcp: false
   data_dir: "data-raw"
   target_crs: "EPSG:32748"
-  region_name: "Jakarta"
+  region_name: "Example region"
   dem_sign_multiplier: 1
   inundation_threshold: 0
   land_threshold: 0
@@ -26,9 +26,9 @@ params:
   max_destinations: 25
   walking_speed_mps: 1.22
   seed: 23401
-  output_dir: "_outputs/jakarta"
+  output_dir: "_outputs/example"
 vignette: >
-  %\VignetteIndexEntry{Jakarta evacuation workflow: function-by-function diagnostics}
+  %\VignetteIndexEntry{Evacuation workflow: function-by-function diagnostics}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -43,9 +43,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette is a diagnostic walkthrough for the Jakarta tsunami-evacuation workflow. It is intentionally more detailed than a normal user vignette because its purpose is to test every major `evacpath` function independently before trusting the high-level `run_evacpath()` wrapper.
+This vignette is a diagnostic walkthrough for the example tsunami-evacuation workflow. It is intentionally more detailed than a normal user vignette because its purpose is to test every major `evacpath` function independently before trusting the high-level `run_evacpath()` wrapper.
 
-The Jakarta workflow has three important tsunami-specific complications:
+This example workflow has three important tsunami-specific complications:
 
 1. The **land-only inundation zone** is the correct area for evacuation origins and final output mapping, but it is not necessarily the correct boundary for escape-point detection.
 2. The **water-combined escape zone** prevents the coastline from becoming a fake safety boundary.
@@ -64,7 +64,7 @@ To run the full diagnostic workflow locally:
 
 ```{r render-command, eval = FALSE}
 rmarkdown::render(
-  "vignettes/jakarta-example.Rmd",
+  "vignettes/diagnostic-example.Rmd",
   params = list(
     run_diagnostics = TRUE,
     run_lcp = TRUE,
@@ -86,7 +86,7 @@ For a faster diagnostic that stops before least-cost paths:
 
 ```{r render-fast, eval = FALSE}
 rmarkdown::render(
-  "vignettes/jakarta-example.Rmd",
+  "vignettes/diagnostic-example.Rmd",
   params = list(
     run_diagnostics = TRUE,
     run_lcp = FALSE,
@@ -138,7 +138,7 @@ run_diagnostics
 run_lcp
 ```
 
-# 2. Locate Jakarta input files
+# 2. Locate example input files
 
 The diagnostic expects these files:
 
@@ -183,17 +183,17 @@ input_files <- data.frame(
 
 input_files
 
-jakarta_data_available <- all(input_files$exists)
-jakarta_data_available
+example_data_available <- all(input_files$exists)
+example_data_available
 ```
 
-If `jakarta_data_available` is `FALSE`, check `params$data_dir` or move the three files into `evacpath/data-raw/`.
+If `example_data_available` is `FALSE`, check `params` or use the packaged files in `inst/extdata/`.
 
 # 3. Read the spatial inputs with `read_spatial()`
 
 `read_spatial()` accepts a file path or an existing `terra` object. Raster formats are read with `terra::rast()` and vector formats are read with `terra::vect()`.
 
-```{r read-inputs, eval = run_diagnostics && jakarta_data_available}
+```{r read-inputs, eval = run_diagnostics && example_data_available}
 dem_raw <- read_spatial(dem_file)
 roads_raw <- read_spatial(roads_file)
 inundation_raw <- read_spatial(inundation_file)
@@ -213,7 +213,7 @@ list(
 
 Before modeling, inspect CRS, extent, resolution, raster value ranges, and road attributes.
 
-```{r raw-diagnostics, eval = run_diagnostics && jakarta_data_available}
+```{r raw-diagnostics, eval = run_diagnostics && example_data_available}
 cat("DEM CRS:\n", terra::crs(dem_raw), "\n\n")
 cat("Roads CRS:\n", terra::crs(roads_raw), "\n\n")
 cat("Inundation CRS:\n", terra::crs(inundation_raw), "\n\n")
@@ -240,7 +240,7 @@ cat("Inundation range:\n")
 print(terra::global(inundation_raw, fun = range, na.rm = TRUE))
 ```
 
-```{r plot-raw-inputs, eval = run_diagnostics && jakarta_data_available, fig.height = 7}
+```{r plot-raw-inputs, eval = run_diagnostics && example_data_available, fig.height = 7}
 par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
 plot(dem_raw, main = "Raw DEM")
 plot(inundation_raw, main = "Raw inundation depth")
@@ -249,9 +249,9 @@ par(mfrow = c(1, 1))
 
 # 4. Clean roads with `clean_roads()`
 
-This is where region-specific road filtering belongs. In the Jakarta prototype, piers were excluded because they can create misleading road-water intersections.
+This is where region-specific road filtering belongs. In the packaged example, piers are excluded because they can create misleading road-water intersections.
 
-```{r clean-roads, eval = run_diagnostics && jakarta_data_available}
+```{r clean-roads, eval = run_diagnostics && example_data_available}
 road_exclude <- NULL
 if (!is.null(params$road_exclude_field) && nzchar(params$road_exclude_field)) {
   road_exclude <- list(
@@ -277,7 +277,7 @@ nrow(roads_clean)
 
 This is the critical tsunami-specific step. The old script created a land mask, water mask, land-only TEZ, and then a TEZ-plus-water layer. The package makes that separation explicit.
 
-```{r prepare-tsunami-zones, eval = run_diagnostics && jakarta_data_available}
+```{r prepare-tsunami-zones, eval = run_diagnostics && example_data_available}
 zones <- prepare_tsunami_zones(
   inundation = inundation_raw,
   dem = dem_raw,
@@ -306,7 +306,7 @@ cat("Water-combined escape-zone polygons:", nrow(zones$escape_zone), "\n")
 
 If land and water are reversed, change `dem_sign_multiplier` from `1` to `-1` or adjust the thresholds.
 
-```{r land-water-check, eval = run_diagnostics && jakarta_data_available, fig.height = 7}
+```{r land-water-check, eval = run_diagnostics && example_data_available, fig.height = 7}
 par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
 plot(zones$land_mask, col = "grey85", legend = FALSE, main = "DEM-derived land mask")
 plot(zones$water_mask, col = "lightskyblue1", legend = FALSE, main = "DEM-derived water mask")
@@ -317,7 +317,7 @@ par(mfrow = c(1, 1))
 
 The land-only zone is for origins and final mapped evacuation time. The water-combined zone is the base zone for escape-point detection.
 
-```{r plot-tsunami-zones, eval = run_diagnostics && jakarta_data_available, fig.height = 7}
+```{r plot-tsunami-zones, eval = run_diagnostics && example_data_available, fig.height = 7}
 par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
 plot(zones$hazard_zone, col = "tomato", border = NA, main = "hazard_zone: land-only TEZ")
 plot(zones$escape_zone, col = "grey90", border = NA, main = "escape_zone: TEZ + water")
@@ -329,7 +329,7 @@ par(mfrow = c(1, 1))
 
 If the road dataset extends beyond the reliable hazard-zone coverage, roads can intersect the artificial rectangular study-area boundary. Those intersections are not real escape points. The fix is to crop the roads used for escape-point detection to a slightly inset extent. The x and y insets are controlled separately.
 
-```{r crop-roads-inner-extent, eval = run_diagnostics && jakarta_data_available}
+```{r crop-roads-inner-extent, eval = run_diagnostics && example_data_available}
 roads_for_escape <- crop_roads_to_inner_extent(
   roads = roads_clean,
   zone = zones$escape_zone,
@@ -344,7 +344,7 @@ cat("Clean roads:", nrow(roads_clean), "\n")
 cat("Roads used for escape-point detection:", nrow(roads_for_escape), "\n")
 ```
 
-```{r plot-roads-inner-extent, eval = run_diagnostics && jakarta_data_available, fig.height = 7}
+```{r plot-roads-inner-extent, eval = run_diagnostics && example_data_available, fig.height = 7}
 plot(zones$escape_zone, col = "grey92", border = "grey60", main = "Roads cropped to inset extent for escape detection")
 plot(roads_clean, add = TRUE, col = adjustcolor("red", alpha.f = 0.25), lwd = 0.35)
 plot(roads_for_escape, add = TRUE, col = "black", lwd = 0.45)
@@ -365,7 +365,7 @@ This is the second major correction. The buffered roads should be combined with 
 
 The package helper is `make_road_aware_escape_zone()`.
 
-```{r road-aware-escape-zone, eval = run_diagnostics && jakarta_data_available}
+```{r road-aware-escape-zone, eval = run_diagnostics && example_data_available}
 escape_boundary_zone <- make_road_aware_escape_zone(
   escape_zone = zones$escape_zone,
   roads = roads_for_escape,
@@ -380,7 +380,7 @@ assert_true(nrow(escape_boundary_zone) > 0, "escape_boundary_zone has no feature
 nrow(escape_boundary_zone)
 ```
 
-```{r plot-road-aware-zone, eval = run_diagnostics && jakarta_data_available, fig.height = 7}
+```{r plot-road-aware-zone, eval = run_diagnostics && example_data_available, fig.height = 7}
 plot(escape_boundary_zone, col = "grey90", border = NA, main = "Road-aware escape-boundary zone")
 plot(zones$hazard_zone, add = TRUE, col = adjustcolor("tomato", alpha.f = 0.45), border = NA)
 plot(roads_for_escape, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.45), lwd = 0.35)
@@ -394,7 +394,7 @@ This section intentionally compares three methods:
 2. Better: TEZ + water `escape_zone`.
 3. Best for this workflow: road-aware escape boundary plus inset-cropped roads.
 
-```{r compare-escape-points, eval = run_diagnostics && jakarta_data_available}
+```{r compare-escape-points, eval = run_diagnostics && example_data_available}
 escape_wrong <- try(
   find_escape_points(
     hazard_zone = zones$hazard_zone,
@@ -430,7 +430,7 @@ comparison
 assert_true(nrow(escape_points) > 0, "Preferred escape-point calculation returned no points.")
 ```
 
-```{r plot-escape-comparison, eval = run_diagnostics && jakarta_data_available, fig.height = 8}
+```{r plot-escape-comparison, eval = run_diagnostics && example_data_available, fig.height = 8}
 par(mfrow = c(1, 3), mar = c(3, 3, 3, 1), las = 1)
 
 plot(zones$hazard_zone, col = "grey90", border = "grey40", main = "Wrong\nland-only boundary")
@@ -460,7 +460,7 @@ escape_boundary_zone = road-aware TEZ + water boundary
 escape_points        = preferred escape points
 ```
 
-```{r assign-core-objects, eval = run_diagnostics && jakarta_data_available}
+```{r assign-core-objects, eval = run_diagnostics && example_data_available}
 hazard_zone <- zones$hazard_zone
 escape_zone <- zones$escape_zone
 dem <- zones$dem
@@ -471,7 +471,7 @@ roads <- roads_clean
 
 `prepare_evac_inputs()` reads, cleans, projects, and converts the land-only `hazard_zone` into a polygon if needed. It does not create the road-aware escape boundary; that is handled separately above.
 
-```{r prepare-core-inputs, eval = run_diagnostics && jakarta_data_available}
+```{r prepare-core-inputs, eval = run_diagnostics && example_data_available}
 inputs <- prepare_evac_inputs(
   hazard_zone = hazard_zone,
   roads = roads,
@@ -495,7 +495,7 @@ assert_true(is_spatraster(dem), "Prepared DEM is not a SpatRaster.")
 
 The evacuation grid should be created from the land-only `hazard_zone`, not the water-combined or road-aware escape zone.
 
-```{r make-grid, eval = run_diagnostics && jakarta_data_available}
+```{r make-grid, eval = run_diagnostics && example_data_available}
 grid_resolution <- terra::res(dem) * params$grid_multiplier
 
 evac_grid <- make_evac_grid(
@@ -510,7 +510,7 @@ cat("Grid resolution:", paste(grid_resolution, collapse = " x "), "\n")
 cat("Grid cells:", nrow(evac_grid), "\n")
 ```
 
-```{r plot-grid, eval = run_diagnostics && jakarta_data_available}
+```{r plot-grid, eval = run_diagnostics && example_data_available}
 plot(hazard_zone, col = "grey95", border = "grey50", main = "Evacuation grid over land-only TEZ")
 plot(evac_grid, add = TRUE, border = adjustcolor("black", alpha.f = 0.25), col = NA)
 plot(roads, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.45), lwd = 0.35)
@@ -520,7 +520,7 @@ plot(roads, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.45), lwd = 0.35)
 
 `make_road_mask()` buffers the roads and preferred escape points, then combines them. The mask constrains least-cost movement to the road/pathway network while still allowing access around escape points.
 
-```{r make-road-mask, eval = run_diagnostics && jakarta_data_available}
+```{r make-road-mask, eval = run_diagnostics && example_data_available}
 road_mask_parts <- make_road_mask(
   roads = roads,
   escape_points = escape_points,
@@ -538,7 +538,7 @@ assert_true(is_spatvector(roads_buffer), "roads_buffer is not a SpatVector.")
 assert_true(is_spatvector(escape_buffer), "escape_buffer is not a SpatVector.")
 ```
 
-```{r plot-road-mask, eval = run_diagnostics && jakarta_data_available}
+```{r plot-road-mask, eval = run_diagnostics && example_data_available}
 plot(hazard_zone, col = "grey95", border = "grey60", main = "Road-constrained movement mask")
 plot(road_mask, add = TRUE, col = adjustcolor("grey30", alpha.f = 0.35), border = NA)
 plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
@@ -548,7 +548,7 @@ plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
 
 Origins should be road-based points inside the land-only inundation zone.
 
-```{r make-road-origins, eval = run_diagnostics && jakarta_data_available}
+```{r make-road-origins, eval = run_diagnostics && example_data_available}
 road_points <- make_road_origins(
   evac_grid = evac_grid,
   roads_buffer = roads_buffer,
@@ -562,7 +562,7 @@ assert_true(nrow(road_points) > 0, "make_road_origins() returned no origins.")
 cat("Road origin points retained:", nrow(road_points), "\n")
 ```
 
-```{r plot-road-origins, eval = run_diagnostics && jakarta_data_available}
+```{r plot-road-origins, eval = run_diagnostics && example_data_available}
 plot(hazard_zone, col = "grey95", border = "grey60", main = "Road origin points inside land-only TEZ")
 plot(roads, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.35), lwd = 0.35)
 plot(road_points, add = TRUE, pch = 21, bg = "dodgerblue", col = "black", cex = 0.45)
@@ -573,7 +573,7 @@ plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
 
 The conductance surface is built from the DEM but masked to the road-constrained movement area. This is the expensive part. `dem_resolution` can be coarsened for testing.
 
-```{r make-conductance, eval = run_diagnostics && jakarta_data_available}
+```{r make-conductance, eval = run_diagnostics && example_data_available}
 dem_resolution <- terra::res(dem) * params$dem_multiplier
 
 conductance <- make_conductance_surface(
@@ -590,7 +590,7 @@ cat("Conductance raster resolution:", paste(terra::res(cs_raster), collapse = " 
 cat("Conductance raster cells:", terra::ncell(cs_raster), "\n")
 ```
 
-```{r plot-conductance, eval = run_diagnostics && jakarta_data_available}
+```{r plot-conductance, eval = run_diagnostics && example_data_available}
 plot(cs_raster, main = "Road-constrained conductance surface")
 plot(hazard_zone, add = TRUE, border = "black", col = NA)
 plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
@@ -600,7 +600,7 @@ plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
 
 This section is optional because it can be slow. For debugging, start with small `max_origins` and `max_destinations` values.
 
-```{r sample-destinations, eval = run_diagnostics && jakarta_data_available}
+```{r sample-destinations, eval = run_diagnostics && example_data_available}
 escape_points_ltd <- escape_points
 if (!is.null(params$max_destinations) && params$max_destinations < nrow(escape_points_ltd)) {
   set.seed(params$seed)
@@ -611,7 +611,7 @@ cat("Escape points available:", nrow(escape_points), "\n")
 cat("Escape points used in diagnostic LCP:", nrow(escape_points_ltd), "\n")
 ```
 
-```{r calc-distance, eval = run_diagnostics && jakarta_data_available && run_lcp}
+```{r calc-distance, eval = run_diagnostics && example_data_available && run_lcp}
 distance_points <- calc_min_distance_to_safety(
   cs = conductance,
   origins = road_points,
@@ -629,7 +629,7 @@ summary(distance_points$distance)
 table(distance_points$type)
 ```
 
-```{r plot-distance-points, eval = run_diagnostics && jakarta_data_available && run_lcp}
+```{r plot-distance-points, eval = run_diagnostics && example_data_available && run_lcp}
 plot(hazard_zone, col = "grey95", border = "grey60", main = "Minimum least-cost distance points")
 plot(roads, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.30), lwd = 0.35)
 plot(distance_points, "distance", add = TRUE, pch = 21, cex = 0.55)
@@ -639,7 +639,7 @@ plot(distance_points, "distance", add = TRUE, pch = 21, cex = 0.55)
 
 `calc_evac_time()` converts distance to time using a walking speed. The default paper-style value is 1.22 m/s, but local planning scenarios should modify it.
 
-```{r calc-time, eval = run_diagnostics && jakarta_data_available && run_lcp}
+```{r calc-time, eval = run_diagnostics && example_data_available && run_lcp}
 example_distances <- c(0, 100, 500, 1000, 2000)
 data.frame(
   distance_m = example_distances,
@@ -655,7 +655,7 @@ data.frame(
 
 `make_evac_polygons()` converts the distance points to Voronoi polygons, calculates evacuation time, and clips the result to the selected output area. For the broad time grid, the clip area should be the land-only `hazard_zone`.
 
-```{r make-polygons, eval = run_diagnostics && jakarta_data_available && run_lcp}
+```{r make-polygons, eval = run_diagnostics && example_data_available && run_lcp}
 evac_polygons <- make_evac_polygons(
   distance_points = distance_points,
   clip_area = hazard_zone,
@@ -669,7 +669,7 @@ assert_true("EvacTimeAvg" %in% names(evac_polygons), "EvacTimeAvg field is missi
 summary(evac_polygons$EvacTimeAvg)
 ```
 
-```{r plot-evac-polygons, eval = run_diagnostics && jakarta_data_available && run_lcp, fig.height = 7}
+```{r plot-evac-polygons, eval = run_diagnostics && example_data_available && run_lcp, fig.height = 7}
 plot(evac_polygons, "EvacTimeAvg", border = NA, main = "Evacuation-time polygons")
 plot(roads, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.30), lwd = 0.35)
 plot(escape_points_ltd, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
@@ -687,7 +687,7 @@ escape_roads_inset_y_m = 250
 road_aware_escape_zone = TRUE
 ```
 
-```{r run-wrapper, eval = run_diagnostics && jakarta_data_available && run_lcp}
+```{r run-wrapper, eval = run_diagnostics && example_data_available && run_lcp}
 result <- run_evacpath(
   hazard_zone = zones$hazard_zone,
   escape_zone = zones$escape_zone,
@@ -727,7 +727,7 @@ assert_true("EvacTimeAvg" %in% names(result$time_grid), "Result time_grid lacks 
 
 This map uses land/water as background, the land-only evacuation-time polygons as the main layer, and the preferred escape points as squares.
 
-```{r final-map, eval = run_diagnostics && jakarta_data_available && run_lcp, fig.width = 9, fig.height = 7}
+```{r final-map, eval = run_diagnostics && example_data_available && run_lcp, fig.width = 9, fig.height = 7}
 evac_map <- result$time_grid
 roads_plot <- crop(result$roads, evac_map)
 escape_plot <- crop(result$escape_points, evac_map)
@@ -796,37 +796,17 @@ legend(
 
 `write_evac_outputs()` writes the major spatial outputs from a completed result object. This should only run after the diagnostic workflow succeeds.
 
-```{r write-outputs, eval = run_diagnostics && jakarta_data_available && run_lcp}
+```{r write-outputs, eval = run_diagnostics && example_data_available && run_lcp}
 write_evac_outputs(
   result,
   output_dir = params$output_dir,
-  prefix = "jakarta"
+  prefix = "example"
 )
 
 list.files(params$output_dir, full.names = TRUE)
 ```
 
-# 20. Legacy wrapper checks
-
-The old names are retained as wrappers, but new work should use the clearer package names.
-
-```{r legacy-checks, eval = run_diagnostics && jakarta_data_available}
-legacy_grid <- evacuation_grid(hazard_zone, resolution = grid_resolution)
-legacy_escape <- escape_points(escape_boundary_zone, roads_for_escape)
-legacy_region <- region_area(hazard_zone, hazard_zone, buffer_m = 100)
-
-assert_true(is_spatvector(legacy_grid), "legacy evacuation_grid() failed.")
-assert_true(is_spatvector(legacy_escape), "legacy escape_points() failed.")
-assert_true(is_spatvector(legacy_region), "legacy region_area() failed.")
-
-list(
-  legacy_grid_n = nrow(legacy_grid),
-  legacy_escape_n = nrow(legacy_escape),
-  legacy_region_n = nrow(legacy_region)
-)
-```
-
-# 21. Troubleshooting checklist
+# 20. Troubleshooting checklist
 
 If escape points look wrong, check these first:
 

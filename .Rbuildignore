@@ -4,5 +4,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^jakarta-example-diagnostics\.Rmd$
+^jakarta-example-diagnostics\.html$
 ^doc$
 ^Meta$
+^_outputs$
+^vignettes/_outputs$

@@ -43,6 +43,8 @@ output/
 results/
 figures/
 figs/
+!man/figures/
+!man/figures/*
 
 # Large geospatial files
 *.tif
