@@ -22,13 +22,13 @@ and \code{run_evacpath()} to run the full workflow.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/your-org/evacpath}
-  \item Report bugs at \url{https://github.com/your-org/evacpath/issues}
+  \item \url{https://github.com/el-cordero/evacpath}
+  \item Report bugs at \url{https://github.com/el-cordero/evacpath/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Elvin Cordero \email{elvin@example.com}
+\strong{Maintainer}: Elvin Cordero \email{elvin.cordero1@upr.edu}
 
 }
 \keyword{package}

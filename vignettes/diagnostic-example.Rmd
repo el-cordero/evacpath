@@ -22,8 +22,8 @@ params:
   escape_roads_inset_x_m: 50
   escape_roads_inset_y_m: 50
   road_aware_escape_zone: true
-  max_origins: 25
-  max_destinations: 25
+  max_origins: null
+  max_destinations: null
   walking_speed_mps: 1.22
   seed: 23401
   output_dir: "_outputs/example"
@@ -44,6 +44,8 @@ knitr::opts_chunk$set(
 ```
 
 This vignette is a diagnostic walkthrough for the example tsunami-evacuation workflow. It is intentionally more detailed than a normal user vignette because its purpose is to test every major `evacpath` function independently before trusting the high-level `run_evacpath()` wrapper.
+
+The workflow builds on open-source least-cost path methods for evacuation planning (Cordero et al. 2025) and uses `leastcostpath` for least-cost path and movement-potential modeling (Lewis 2023; Lewis 2021).
 
 This example workflow has three important tsunami-specific complications:
 
@@ -75,9 +77,7 @@ rmarkdown::render(
     dem_multiplier = 50,
     escape_roads_inset_x_m = 50,
     escape_roads_inset_y_m = 50,
-    road_aware_escape_zone = TRUE,
-    max_origins = 25,
-    max_destinations = 25
+    road_aware_escape_zone = TRUE
   )
 )
 ```
@@ -600,7 +600,7 @@ plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
 
 # 14. Calculate least-cost distance with `calc_min_distance_to_safety()`
 
-This section is optional because it can be slow. For debugging, start with small `max_origins` and `max_destinations` values.
+This section is optional because it can be slow for large study areas. The packaged example area is small, so the default parameters use all available origins and destinations.
 
 ```{r sample-destinations, eval = run_diagnostics && example_data_available}
 escape_points_ltd <- escape_points
@@ -825,7 +825,7 @@ If escape points look wrong, check these first:
 The expected tsunami pattern is:
 
 ```r
-zones <- prepare_tsunami_zones(inundation, dem, target_crs = crs_jak)
+zones <- prepare_tsunami_zones(inundation, dem, target_crs = target_crs)
 
 roads_for_escape <- crop_roads_to_inner_extent(
   roads = roads,
@@ -851,9 +851,17 @@ result <- run_evacpath(
   escape_zone = zones$escape_zone,
   roads = roads,
   dem = zones$dem,
-  target_crs = crs_jak,
+  target_crs = target_crs,
   escape_roads_inset_x_m = 50,
   escape_roads_inset_y_m = 50,
   road_aware_escape_zone = TRUE
 )
 ```
+
+# References
+
+Cordero, E., Ruiz Vélez, R., Huérfano Moreno, V., Sherman, C., 2025. Enhancing tsunami evacuation strategies in Puerto Rico using open-source least-cost path analysis. J. Disaster Sci. Manag. 1, 18. https://doi.org/10.1007/s44367-025-00018-y
+
+Lewis, J., 2023. leastcostpath: Modelling Pathways and Movement Potential Within a Landscape.
+
+Lewis, J., 2021. Probabilistic Modelling for Incorporating Uncertainty in Least Cost Path Results: a Postdictive Roman Road Case Study. Journal of Archaeological Method and Theory 28, 911-924. https://doi.org/10.1007/s10816-021-09522-w

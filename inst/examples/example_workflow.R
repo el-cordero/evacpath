@@ -66,8 +66,6 @@ result <- run_evacpath(
   escape_roads_inset_x_m = 250,
   escape_roads_inset_y_m = 250,
   road_aware_escape_zone = TRUE,
-  max_origins = 25,
-  max_destinations = 25,
   seed = 23401,
   walking_speed_mps = 1.22,
   clip_mode = "hazard",

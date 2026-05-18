@@ -45,7 +45,6 @@ mask_parts <- make_road_mask(
 origins <- make_road_origins(
   evac_grid = grid,
   roads_buffer = mask_parts$roads_buffer,
-  max_origins = 25,
   seed = 23401
 )
 

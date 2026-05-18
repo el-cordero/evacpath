@@ -22,8 +22,8 @@ params:
   escape_roads_inset_x_m: 250
   escape_roads_inset_y_m: 250
   road_aware_escape_zone: true
-  max_origins: 25
-  max_destinations: 25
+  max_origins: null
+  max_destinations: null
   walking_speed_mps: 1.22
   seed: 23401
   output_dir: "_outputs/example"
@@ -75,9 +75,7 @@ rmarkdown::render(
     dem_multiplier = 50,
     escape_roads_inset_x_m = 250,
     escape_roads_inset_y_m = 250,
-    road_aware_escape_zone = TRUE,
-    max_origins = 25,
-    max_destinations = 25
+    road_aware_escape_zone = TRUE
   )
 )
 ```
@@ -598,7 +596,7 @@ plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
 
 # 14. Calculate least-cost distance with `calc_min_distance_to_safety()`
 
-This section is optional because it can be slow. For debugging, start with small `max_origins` and `max_destinations` values.
+This section is optional because it can be slow for large study areas. The packaged example area is small, so the default parameters use all available origins and destinations.
 
 ```{r sample-destinations, eval = run_diagnostics && example_data_available}
 escape_points_ltd <- escape_points

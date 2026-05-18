@@ -19,6 +19,8 @@ For a new region, `evacpath` expects three core spatial inputs:
 
 The most important requirement is that distance calculations should use a projected coordinate reference system in meters.
 
+The workflow builds on open-source least-cost path methods for evacuation planning (Cordero et al. 2025) and uses `leastcostpath` for least-cost path and movement-potential modeling (Lewis 2023; Lewis 2021).
+
 ```{r setup}
 library(evacpath)
 ```
@@ -74,3 +76,11 @@ roads <- clean_roads(
   target_crs = "EPSG:XXXX"
 )
 ```
+
+## References
+
+Cordero, E., Ruiz Vélez, R., Huérfano Moreno, V., Sherman, C., 2025. Enhancing tsunami evacuation strategies in Puerto Rico using open-source least-cost path analysis. J. Disaster Sci. Manag. 1, 18. https://doi.org/10.1007/s44367-025-00018-y
+
+Lewis, J., 2023. leastcostpath: Modelling Pathways and Movement Potential Within a Landscape.
+
+Lewis, J., 2021. Probabilistic Modelling for Incorporating Uncertainty in Least Cost Path Results: a Postdictive Roman Road Case Study. Journal of Archaeological Method and Theory 28, 911-924. https://doi.org/10.1007/s10816-021-09522-w

@@ -6,6 +6,8 @@ The package is designed around a simple idea:
 
 > hazard zone + roads/pathways + DEM + projected CRS -> distance-to-safety and evacuation-time outputs
 
+The workflow builds on open-source least-cost path methods for evacuation planning (Cordero et al. 2025) and uses `leastcostpath` for least-cost path and movement-potential modeling (Lewis 2023; Lewis 2021).
+
 ## Current status
 
 This is an initial package scaffold, not a polished CRAN release. It is ready for local development with `devtools::load_all()` and `devtools::document()`.
@@ -24,7 +26,6 @@ result <- run_evacpath(
   road_buffer_m = 2,
   escape_buffer_m = 5,
   final_road_buffer_m = 3,
-  max_origins = 2000,
   seed = 23401,
   walking_speed_mps = 1.22,
   clip_mode = "hazard",
@@ -74,7 +75,6 @@ run_evacpath(
   escape_buffer_m = 5,
   final_road_buffer_m = 3,
   dem_resolution = NULL,
-  max_origins = 2000,
   walking_speed_mps = 1.22,
   clip_mode = "hazard"
 )
@@ -112,8 +112,7 @@ result <- run_evacpath(
   roads = roads,
   dem = zones$dem,
   target_crs = "EPSG:XXXX",
-  region_name = "Study area",
-  max_origins = 2000
+  region_name = "Study area"
 )
 ```
 
@@ -166,11 +165,11 @@ inundation <- terra::rast(system.file("extdata/tsunami_inundation_depth.tif", pa
 
 The detailed diagnostic example is available at `vignettes/diagnostic-example.Rmd` and `inst/examples/diagnostic-example.Rmd`. It walks through each major function separately, including tsunami-specific zone preparation, inset cropping of roads used for escape-point detection, road-aware escape-boundary generation, least-cost-path testing, and final time-grid mapping.
 
-![Roads cropped to an inset extent for escape detection](man/figures/example-roads-inset.png)
+The README figures are generated with `terra` plotting code in `inst/scripts/make-readme-figures.R`. The figures use a focused projected window (`x = 669000` to `675000`, `y = 9223000` to `9225000`) so the examples stay readable.
 
-![Road-constrained movement mask](man/figures/example-road-mask.png)
+![Example hazard zone, roads, and escape points](man/figures/readme-example-inputs.png)
 
-![Modeled pedestrian evacuation time](man/figures/example-evacuation-time.png)
+![Example modeled evacuation time](man/figures/readme-example-time.png)
 
 For tsunami workflows, the preferred escape-point pattern is:
 
@@ -198,3 +197,11 @@ escape_points <- find_escape_points(
 ```
 
 Use `?evacpath` after running `devtools::document()` or installing the package to view the package-level help page.
+
+## References
+
+Cordero, E., Ruiz Vélez, R., Huérfano Moreno, V., Sherman, C., 2025. Enhancing tsunami evacuation strategies in Puerto Rico using open-source least-cost path analysis. J. Disaster Sci. Manag. 1, 18. https://doi.org/10.1007/s44367-025-00018-y
+
+Lewis, J., 2023. leastcostpath: Modelling Pathways and Movement Potential Within a Landscape.
+
+Lewis, J., 2021. Probabilistic Modelling for Incorporating Uncertainty in Least Cost Path Results: a Postdictive Roman Road Case Study. Journal of Archaeological Method and Theory 28, 911-924. https://doi.org/10.1007/s10816-021-09522-w
