@@ -22,3 +22,15 @@ Removes user-specified features from a road/pathway layer. This is useful for
 excluding piers, tunnels, private ways, or other features that should not be
 used in pedestrian evacuation modeling.
 }
+\examples{
+roads <- terra::vect(
+  list(
+    matrix(c(0, 0, 0, 1), ncol = 2, byrow = TRUE),
+    matrix(c(1, 0, 1, 1), ncol = 2, byrow = TRUE)
+  ),
+  type = "lines",
+  crs = "EPSG:3857"
+)
+roads$kind <- c("road", "pier")
+clean_roads(roads, exclude = list(field = "kind", values = "pier"))
+}

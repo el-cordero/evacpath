@@ -7,6 +7,13 @@
 #' @param origin Origin point.
 #' @param destination Destination point.
 #' @return A least-cost path object or `NULL`.
+#' @examples
+#' dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
+#'   vals = 1, crs = "EPSG:3857")
+#' cs <- make_conductance_surface(dem)
+#' origin <- terra::vect(data.frame(x = 0.5, y = 0.5), geom = c("x", "y"), crs = "EPSG:3857")
+#' destination <- terra::vect(data.frame(x = 4.5, y = 4.5), geom = c("x", "y"), crs = "EPSG:3857")
+#' calculate_lc_path(cs, origin, destination)
 #' @export
 calculate_lc_path <- function(cs, origin, destination) {
   tryCatch(
@@ -24,6 +31,10 @@ calculate_lc_path <- function(cs, origin, destination) {
 #'
 #' @param lc_paths_list A list of least-cost path line vectors.
 #' @return Minimum non-zero, finite path distance.
+#' @examples
+#' line <- terra::vect(matrix(c(0, 0, 1, 1), ncol = 2, byrow = TRUE),
+#'   type = "lines", crs = "EPSG:3857")
+#' calculate_min_dist(list(line))
 #' @export
 calculate_min_dist <- function(lc_paths_list) {
   lc_paths <- terra::vect(lc_paths_list)
@@ -52,6 +63,13 @@ calculate_min_dist <- function(lc_paths_list) {
 #' @param check_locations Logical passed to `leastcostpath::create_lcp()`. The default
 #'   is `FALSE` for speed after inputs have already been projected and cropped.
 #' @return A point `SpatVector` with columns `distance` and `type`.
+#' @examples
+#' dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
+#'   vals = 1, crs = "EPSG:3857")
+#' cs <- make_conductance_surface(dem)
+#' origins <- terra::vect(data.frame(x = 0.5, y = 0.5), geom = c("x", "y"), crs = "EPSG:3857")
+#' destinations <- terra::vect(data.frame(x = 4.5, y = 4.5), geom = c("x", "y"), crs = "EPSG:3857")
+#' calc_min_distance_to_safety(cs, origins, destinations)
 #' @export
 calc_min_distance_to_safety <- function(
   cs,
@@ -151,6 +169,8 @@ calc_min_distance_to_safety <- function(
 #'   default is 1.22 m/s, but this should be changed for local planning scenarios.
 #' @param units Output units: `"minutes"`, `"seconds"`, or `"hours"`.
 #' @return Numeric vector of evacuation times.
+#' @examples
+#' calc_evac_time(c(0, 120, 240), walking_speed_mps = 1.2)
 #' @export
 calc_evac_time <- function(distance_m, walking_speed_mps = 1.22, units = "minutes") {
   units <- match.arg(units, choices = c("minutes", "seconds", "hours"))
@@ -181,6 +201,15 @@ calc_evac_time <- function(distance_m, walking_speed_mps = 1.22, units = "minute
 #' @param distance_col Name of the output distance column.
 #' @param time_col Name of the output time column.
 #' @return A polygon `SpatVector`.
+#' @examples
+#' pts <- terra::vect(
+#'   data.frame(x = c(0, 1, 0, 1), y = c(0, 0, 1, 1), distance = c(0, 5, 10, 15)),
+#'   geom = c("x", "y"),
+#'   crs = "EPSG:3857"
+#' )
+#' clip <- terra::as.polygons(terra::rast(nrows = 2, ncols = 2, xmin = -1, xmax = 2,
+#'   ymin = -1, ymax = 2, vals = 1, crs = "EPSG:3857"), dissolve = TRUE)
+#' make_evac_polygons(pts, clip_area = clip)
 #' @export
 make_evac_polygons <- function(
   distance_points,

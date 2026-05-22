@@ -21,3 +21,10 @@ Dissolves the full hazard zone, buffers a smaller study area, and crops the
 full zone to that buffer. This is useful when escape/safety points outside a
 municipality or local study area should still be considered.
 }
+\examples{
+r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+  vals = 1, crs = "EPSG:3857")
+zone <- terra::as.polygons(r, dissolve = TRUE)
+study <- terra::as.polygons(terra::crop(r, terra::ext(1, 3, 1, 3)), dissolve = TRUE)
+make_region_area(zone, study, buffer_m = 1)
+}

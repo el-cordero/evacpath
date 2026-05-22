@@ -15,3 +15,8 @@ Minimum non-zero, finite path distance.
 \description{
 Calculate the minimum path distance from a list of least-cost paths
 }
+\examples{
+line <- terra::vect(matrix(c(0, 0, 1, 1), ncol = 2, byrow = TRUE),
+  type = "lines", crs = "EPSG:3857")
+calculate_min_dist(list(line))
+}

@@ -27,3 +27,8 @@ A \code{leastcostpath} conductance surface object.
 Masks a DEM to an optional road/pathway mask and creates a slope conductance
 surface using \code{leastcostpath}.
 }
+\examples{
+dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
+  vals = 1, crs = "EPSG:3857")
+make_conductance_surface(dem)
+}

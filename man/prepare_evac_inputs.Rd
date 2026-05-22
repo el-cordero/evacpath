@@ -35,3 +35,12 @@ A named list with \code{hazard_zone}, \code{roads}, and \code{dem}.
 \description{
 Read and project the core evacuation inputs
 }
+\examples{
+dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
+  vals = 1, crs = "EPSG:3857")
+hazard <- terra::as.polygons(dem, dissolve = TRUE)
+roads <- terra::vect(matrix(c(0, 2.5, 5, 2.5), ncol = 2, byrow = TRUE),
+  type = "lines", crs = "EPSG:3857")
+inputs <- prepare_evac_inputs(hazard, roads, dem)
+names(inputs)
+}

@@ -33,3 +33,9 @@ areas, and dissolves the result. The mask is used to constrain least-cost
 movement to the road/pathway network while allowing access around escape
 locations.
 }
+\examples{
+roads <- terra::vect(matrix(c(0, 1, 4, 1), ncol = 2, byrow = TRUE),
+  type = "lines", crs = "EPSG:3857")
+escape <- terra::vect(data.frame(x = 4, y = 1), geom = c("x", "y"), crs = "EPSG:3857")
+make_road_mask(roads, escape, road_buffer_m = 0.1, escape_buffer_m = 0.2)
+}

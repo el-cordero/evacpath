@@ -241,10 +241,10 @@ print(terra::global(inundation_raw, fun = range, na.rm = TRUE))
 ```
 
 ```{r plot-raw-inputs, eval = run_diagnostics && example_data_available, fig.height = 7}
-par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
+oldpar <- par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
 plot(dem_raw, main = "Raw DEM")
 plot(inundation_raw, main = "Raw inundation depth")
-par(mfrow = c(1, 1))
+par(oldpar)
 ```
 
 # 4. Clean roads with `clean_roads()`
@@ -307,10 +307,10 @@ cat("Water-combined escape-zone polygons:", nrow(zones$escape_zone), "\n")
 If land and water are reversed, change `dem_sign_multiplier` from `1` to `-1` or adjust the thresholds.
 
 ```{r land-water-check, eval = run_diagnostics && example_data_available, fig.height = 7}
-par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
+oldpar <- par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
 plot(zones$land_mask, col = "grey85", legend = FALSE, main = "DEM-derived land mask")
 plot(zones$water_mask, col = "lightskyblue1", legend = FALSE, main = "DEM-derived water mask")
-par(mfrow = c(1, 1))
+par(oldpar)
 ```
 
 ## 5.2 Check the two tsunami zones
@@ -318,11 +318,11 @@ par(mfrow = c(1, 1))
 The land-only zone is for origins and final mapped evacuation time. The water-combined zone is the base zone for escape-point detection.
 
 ```{r plot-tsunami-zones, eval = run_diagnostics && example_data_available, fig.height = 7}
-par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
+oldpar <- par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
 plot(zones$hazard_zone, col = "tomato", border = NA, main = "hazard_zone: land-only TEZ")
 plot(zones$escape_zone, col = "grey90", border = NA, main = "escape_zone: TEZ + water")
 plot(zones$hazard_zone, add = TRUE, col = "tomato", border = NA)
-par(mfrow = c(1, 1))
+par(oldpar)
 ```
 
 # 6. Crop roads to an inner extent before escape-point detection
@@ -431,7 +431,7 @@ assert_true(nrow(escape_points) > 0, "Preferred escape-point calculation returne
 ```
 
 ```{r plot-escape-comparison, eval = run_diagnostics && example_data_available, fig.height = 8}
-par(mfrow = c(1, 3))
+oldpar <- par(mfrow = c(1, 3))
 
 plot(zones$hazard_zone, col = "grey90", border = "grey40", main = "Wrong\nland-only boundary")
 plot(roads_clean, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.35), lwd = 0.35)
@@ -447,7 +447,7 @@ plot(escape_boundary_zone, col = "grey90", border = "grey40", main = "Preferred\
 plot(roads_for_escape, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.35), lwd = 0.35)
 plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
 
-par(mfrow = c(1, 1))
+par(oldpar)
 ```
 
 From this point forward, the diagnostic uses:
@@ -754,7 +754,7 @@ bg_cols <- c(
 )
 time_cols <- hcl.colors(100, "YlOrRd", rev = TRUE)
 
-par(mar = c(4, 4, 3, 5), mgp = c(2.2, 0.7, 0), las = 1, bg = "white", xpd = FALSE)
+oldpar <- par(mar = c(4, 4, 3, 5), mgp = c(2.2, 0.7, 0), las = 1, bg = "white", xpd = FALSE)
 
 plot(
   land_water,
@@ -792,6 +792,7 @@ legend(
   cex = 0.7,
   inset = 0.02
 )
+par(oldpar)
 ```
 
 # 19. Write outputs with `write_evac_outputs()`

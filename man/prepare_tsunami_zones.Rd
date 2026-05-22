@@ -60,3 +60,11 @@ land-only inundation zone with water so that the coastline is not treated as
 an artificial escape boundary. This prevents false escape/safety points along
 the water-land edge when roads touch or approach the shoreline.
 }
+\examples{
+dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
+  vals = rep(c(-1, 1), length.out = 25), crs = "EPSG:3857")
+inundation <- dem
+terra::values(inundation) <- 1
+zones <- prepare_tsunami_zones(inundation, dem, as_polygon = TRUE)
+names(zones)
+}

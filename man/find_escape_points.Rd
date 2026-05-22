@@ -30,3 +30,11 @@ Intersects a road/pathway network with the boundary of the hazard zone and
 converts the intersection geometry to points. These points represent candidate
 exits from the hazard zone.
 }
+\examples{
+r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+  vals = 1, crs = "EPSG:3857")
+zone <- terra::as.polygons(r, dissolve = TRUE)
+roads <- terra::vect(matrix(c(-1, 2, 5, 2), ncol = 2, byrow = TRUE),
+  type = "lines", crs = "EPSG:3857")
+find_escape_points(zone, roads)
+}

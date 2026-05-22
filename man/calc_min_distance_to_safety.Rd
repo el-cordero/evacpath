@@ -38,3 +38,11 @@ For each origin point, calculates least-cost paths to all candidate safety
 points and stores the shortest finite path distance. Destination points are
 appended to the output with distance equal to zero.
 }
+\examples{
+dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
+  vals = 1, crs = "EPSG:3857")
+cs <- make_conductance_surface(dem)
+origins <- terra::vect(data.frame(x = 0.5, y = 0.5), geom = c("x", "y"), crs = "EPSG:3857")
+destinations <- terra::vect(data.frame(x = 4.5, y = 4.5), geom = c("x", "y"), crs = "EPSG:3857")
+calc_min_distance_to_safety(cs, origins, destinations)
+}

@@ -32,3 +32,12 @@ A point \code{SpatVector} of road-based evacuation origins.
 Intersects an evacuation grid with a buffered road network and converts the
 resulting road-crossing cell geometry to points.
 }
+\examples{
+r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+  vals = 1, crs = "EPSG:3857")
+grid <- make_evac_grid(terra::as.polygons(r, dissolve = TRUE), resolution = 1)
+roads <- terra::vect(matrix(c(0, 2, 4, 2), ncol = 2, byrow = TRUE),
+  type = "lines", crs = "EPSG:3857")
+roads_buffer <- terra::buffer(roads, 0.2)
+make_road_origins(grid, roads_buffer, max_origins = 3, seed = 1)
+}

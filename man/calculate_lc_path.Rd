@@ -20,3 +20,11 @@ A least-cost path object or \code{NULL}.
 Compatibility wrapper around \code{\link[leastcostpath:create_lcp]{leastcostpath::create_lcp()}} that returns \code{NULL}
 when a path cannot be created.
 }
+\examples{
+dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
+  vals = 1, crs = "EPSG:3857")
+cs <- make_conductance_surface(dem)
+origin <- terra::vect(data.frame(x = 0.5, y = 0.5), geom = c("x", "y"), crs = "EPSG:3857")
+destination <- terra::vect(data.frame(x = 4.5, y = 4.5), geom = c("x", "y"), crs = "EPSG:3857")
+calculate_lc_path(cs, origin, destination)
+}

@@ -12,7 +12,10 @@ Description: Tools for road-constrained, least-cost pedestrian evacuation modeli
     to support workflows like tsunami evacuation modeling while remaining
     adaptable to other regions and hazards. Tsunami-specific helpers support separate
     land-only hazard zones, water-combined escape zones, road-aware escape
-    boundaries, and study-area inset cropping for escape-point QA/QC.
+    boundaries, and study-area inset cropping for quality assurance and quality
+    control. Methods build on Cordero et al. (2025) <doi:10.1007/s44367-025-00018-y>,
+    Lewis (2021) <doi:10.1007/s10816-021-09522-w>, and Joseph Lewis's
+    'leastcostpath' package (2023) <https://CRAN.R-project.org/package=leastcostpath>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

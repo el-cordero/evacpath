@@ -74,26 +74,33 @@ escape_points <- find_escape_points(
 
 escape_points_window <- crop(escape_points, readme_extent)
 
-png(
-  filename = file.path(output_dir, "readme-example-inputs.png"),
-  width = 1400,
-  height = 700,
-  res = 180
-)
-par(mar = c(3, 3, 3, 1), mgp = c(1.8, 0.6, 0), las = 1, bg = "white")
-plot(
-  escape_zone,
-  ext = readme_extent,
-  col = "grey94",
-  border = "grey70",
-  main = "Example Hazard Zone, Roads, and Escape Points",
-  cex.main = 1.1,
-  axes = FALSE
-)
-plot(hazard_zone, add = TRUE, col = "#f28e2b99", border = NA)
-plot(roads, add = TRUE, col = "#333333", lwd = 0.5)
-plot(escape_points_window, add = TRUE, pch = 22, bg = "#e15759", col = "black", cex = 0.7)
-dev.off()
+local({
+  png(
+    filename = file.path(output_dir, "readme-example-inputs.png"),
+    width = 1400,
+    height = 700,
+    res = 180
+  )
+  oldpar <- par(no.readonly = TRUE)
+  on.exit({
+    par(oldpar)
+    dev.off()
+  })
+
+  par(mar = c(3, 3, 3, 1), mgp = c(1.8, 0.6, 0), las = 1, bg = "white")
+  plot(
+    escape_zone,
+    ext = readme_extent,
+    col = "grey94",
+    border = "grey70",
+    main = "Example Hazard Zone, Roads, and Escape Points",
+    cex.main = 1.1,
+    axes = FALSE
+  )
+  plot(hazard_zone, add = TRUE, col = "#f28e2b99", border = NA)
+  plot(roads, add = TRUE, col = "#333333", lwd = 0.5)
+  plot(escape_points_window, add = TRUE, pch = 22, bg = "#e15759", col = "black", cex = 0.7)
+})
 
 result <- run_evacpath(
   hazard_zone = hazard_zone,
@@ -119,24 +126,31 @@ time_window <- crop(result$time_grid, readme_extent)
 result_roads_window <- crop(result$roads, readme_extent)
 result_escape_window <- crop(result$escape_points, readme_extent)
 
-png(
-  filename = file.path(output_dir, "readme-example-time.png"),
-  width = 1400,
-  height = 700,
-  res = 180
-)
-par(mar = c(3, 3, 3, 5), mgp = c(1.8, 0.6, 0), las = 1, bg = "white")
-plot(
-  time_window,
-  "EvacTimeAvg",
-  axes = FALSE,
-  ext = readme_extent,
-  col = hcl.colors(5, "YlOrRd", rev = TRUE),
-  border = NA,
-  main = "Example Modeled Evacuation Time",
-  cex.main = 1.1,
-  plg = list(title = "Minutes", cex = 0.8, title.cex = 0.85)
-)
-plot(result_roads_window, add = TRUE, col = "#33333380", lwd = 0.35)
-plot(escape_points_window, add = TRUE, pch = 22, bg = "#e15759", col = "black", cex = 0.65)
-dev.off()
+local({
+  png(
+    filename = file.path(output_dir, "readme-example-time.png"),
+    width = 1400,
+    height = 700,
+    res = 180
+  )
+  oldpar <- par(no.readonly = TRUE)
+  on.exit({
+    par(oldpar)
+    dev.off()
+  })
+
+  par(mar = c(3, 3, 3, 5), mgp = c(1.8, 0.6, 0), las = 1, bg = "white")
+  plot(
+    time_window,
+    "EvacTimeAvg",
+    axes = FALSE,
+    ext = readme_extent,
+    col = hcl.colors(5, "YlOrRd", rev = TRUE),
+    border = NA,
+    main = "Example Modeled Evacuation Time",
+    cex.main = 1.1,
+    plg = list(title = "Minutes", cex = 0.8, title.cex = 0.85)
+  )
+  plot(result_roads_window, add = TRUE, col = "#33333380", lwd = 0.35)
+  plot(escape_points_window, add = TRUE, pch = 22, bg = "#e15759", col = "black", cex = 0.65)
+})

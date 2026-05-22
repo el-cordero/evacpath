@@ -35,3 +35,19 @@ This preserves the original paper-script approach while keeping interpolation
 optional. For most package workflows, \code{make_evac_polygons()} is the simpler
 output.
 }
+\examples{
+if (requireNamespace("fields", quietly = TRUE)) {
+  pts <- terra::vect(
+    data.frame(
+      x = c(0, 1, 0, 1, 0.5, 1.5),
+      y = c(0, 0, 1, 1, 0.5, 1.5),
+      distance = c(0, 5, 10, 15, 7, 20)
+    ),
+    geom = c("x", "y"),
+    crs = "EPSG:3857"
+  )
+  area <- terra::as.polygons(terra::rast(nrows = 2, ncols = 2, xmin = -1, xmax = 2,
+    ymin = -1, ymax = 2, vals = 1, crs = "EPSG:3857"), dissolve = TRUE)
+  interpolate_distance_surface(pts, area, area, resolution_coarse = 0.5, resolution_fine = 1)
+}
+}

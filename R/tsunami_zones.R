@@ -30,6 +30,13 @@
 #'   for origin generation, mapping, and output clipping. `escape_zone` should
 #'   usually be passed to `run_evacpath(escape_zone = ...)` or
 #'   `find_escape_points()`.
+#' @examples
+#' dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
+#'   vals = rep(c(-1, 1), length.out = 25), crs = "EPSG:3857")
+#' inundation <- dem
+#' terra::values(inundation) <- 1
+#' zones <- prepare_tsunami_zones(inundation, dem, as_polygon = TRUE)
+#' names(zones)
 #' @export
 prepare_tsunami_zones <- function(
   inundation,
@@ -115,8 +122,8 @@ prepare_tsunami_zones <- function(
 #'
 #' Mirrors the original script logic where roads were buffered, optionally
 #' buffered again for tolerance, cropped to the inundation zone, and then
-#' combined with the zone. This is useful for QA/QC and for reproducing the
-#' earlier road-plus-inundation analysis area.
+#' combined with the zone. This is useful for quality assurance and quality
+#' control and for reproducing the earlier road-plus-inundation analysis area.
 #'
 #' @param roads Road/pathway network.
 #' @param zone Polygon/raster zone used to crop buffered roads.
@@ -125,6 +132,13 @@ prepare_tsunami_zones <- function(
 #' @param include_zone Logical. If `TRUE`, combine the cropped road buffer with
 #'   `zone` and dissolve the result.
 #' @return A `SpatVector`.
+#' @examples
+#' r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+#'   vals = 1, crs = "EPSG:3857")
+#' zone <- terra::as.polygons(r, dissolve = TRUE)
+#' roads <- terra::vect(matrix(c(0, 2, 4, 2), ncol = 2, byrow = TRUE),
+#'   type = "lines", crs = "EPSG:3857")
+#' make_roads_in_zone(roads, zone, road_buffer_m = 0.1)
 #' @export
 make_roads_in_zone <- function(
   roads,

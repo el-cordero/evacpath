@@ -17,3 +17,7 @@ Accepts an existing \code{terra} object or a file path and returns a \code{SpatR
 or \code{SpatVector}. Raster-like extensions are read with \code{\link[terra:rast]{terra::rast()}} and
 vector-like extensions are read with \code{\link[terra:vect]{terra::vect()}}.
 }
+\examples{
+r <- terra::rast(nrows = 2, ncols = 2, vals = 1)
+read_spatial(r)
+}

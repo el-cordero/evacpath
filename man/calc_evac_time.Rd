@@ -20,3 +20,6 @@ Numeric vector of evacuation times.
 \description{
 Convert distance to evacuation time
 }
+\examples{
+calc_evac_time(c(0, 120, 240), walking_speed_mps = 1.2)
+}

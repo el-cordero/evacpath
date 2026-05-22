@@ -8,6 +8,11 @@
 #' @param resolution Grid cell resolution in map units. Use meters when data are
 #'   in a projected CRS. Can be length 1 or 2.
 #' @return A polygon `SpatVector` grid clipped/masked to the hazard zone.
+#' @examples
+#' r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+#'   vals = 1, crs = "EPSG:3857")
+#' zone <- terra::as.polygons(r, dissolve = TRUE)
+#' make_evac_grid(zone, resolution = 1)
 #' @export
 make_evac_grid <- function(hazard_zone, resolution) {
   hazard_zone <- read_spatial(hazard_zone)
@@ -34,6 +39,12 @@ make_evac_grid <- function(hazard_zone, resolution) {
 #' @param study_area Local study area.
 #' @param buffer_m Buffer distance in map units, typically meters.
 #' @return A polygon `SpatVector` for the broader analysis region.
+#' @examples
+#' r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+#'   vals = 1, crs = "EPSG:3857")
+#' zone <- terra::as.polygons(r, dissolve = TRUE)
+#' study <- terra::as.polygons(terra::crop(r, terra::ext(1, 3, 1, 3)), dissolve = TRUE)
+#' make_region_area(zone, study, buffer_m = 1)
 #' @export
 make_region_area <- function(hazard_zone, study_area, buffer_m = 5000) {
   hazard_zone <- .as_hazard_polygon(read_spatial(hazard_zone), dissolve = TRUE)
@@ -61,6 +72,13 @@ make_region_area <- function(hazard_zone, study_area, buffer_m = 5000) {
 #' @param region_buffer_m Buffer distance passed to `make_region_area()` when
 #'   `study_area` is supplied.
 #' @return A point `SpatVector` of candidate escape/safety points.
+#' @examples
+#' r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+#'   vals = 1, crs = "EPSG:3857")
+#' zone <- terra::as.polygons(r, dissolve = TRUE)
+#' roads <- terra::vect(matrix(c(-1, 2, 5, 2), ncol = 2, byrow = TRUE),
+#'   type = "lines", crs = "EPSG:3857")
+#' find_escape_points(zone, roads)
 #' @export
 find_escape_points <- function(
   hazard_zone,

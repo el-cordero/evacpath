@@ -20,3 +20,9 @@ Creates polygon grid cells over a hazard/evacuation zone and masks the grid to
 the zone. The resulting cells can be intersected with buffered roads to create
 road-based origin points.
 }
+\examples{
+r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+  vals = 1, crs = "EPSG:3857")
+zone <- terra::as.polygons(r, dissolve = TRUE)
+make_evac_grid(zone, resolution = 1)
+}

@@ -61,6 +61,26 @@
 #' @param lcp_check_locations Logical passed to `leastcostpath::create_lcp()`.
 #'   Default is `FALSE` for speed after projection/cropping checks.
 #' @return An `evacpath_result` list containing spatial outputs and parameters.
+#' @examples
+#' dem <- terra::rast(nrows = 7, ncols = 7, xmin = 0, xmax = 7, ymin = 0, ymax = 7,
+#'   vals = 1, crs = "EPSG:3857")
+#' hazard_raster <- terra::crop(dem, terra::ext(1, 6, 1, 6))
+#' hazard <- terra::as.polygons(hazard_raster, dissolve = TRUE)
+#' roads <- terra::vect(matrix(c(0, 3.5, 7, 3.5), ncol = 2, byrow = TRUE),
+#'   type = "lines", crs = "EPSG:3857")
+#' result <- run_evacpath(
+#'   hazard_zone = hazard,
+#'   roads = roads,
+#'   dem = dem,
+#'   grid_resolution = 1,
+#'   road_buffer_m = 0.2,
+#'   escape_buffer_m = 0.3,
+#'   final_road_buffer_m = 0.2,
+#'   max_origins = 2,
+#'   max_destinations = 2,
+#'   seed = 1
+#' )
+#' result
 #' @export
 run_evacpath <- function(
   hazard_zone,

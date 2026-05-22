@@ -30,6 +30,14 @@ A \code{SpatVector}.
 \description{
 Mirrors the original script logic where roads were buffered, optionally
 buffered again for tolerance, cropped to the inundation zone, and then
-combined with the zone. This is useful for QA/QC and for reproducing the
-earlier road-plus-inundation analysis area.
+combined with the zone. This is useful for quality assurance and quality
+control and for reproducing the earlier road-plus-inundation analysis area.
+}
+\examples{
+r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+  vals = 1, crs = "EPSG:3857")
+zone <- terra::as.polygons(r, dissolve = TRUE)
+roads <- terra::vect(matrix(c(0, 2, 4, 2), ncol = 2, byrow = TRUE),
+  type = "lines", crs = "EPSG:3857")
+make_roads_in_zone(roads, zone, road_buffer_m = 0.1)
 }

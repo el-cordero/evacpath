@@ -12,6 +12,11 @@
 #' @param return_components Logical. If `TRUE`, return a list with the mask and
 #'   component buffers.
 #' @return A dissolved road mask `SpatVector`, or a list when `return_components = TRUE`.
+#' @examples
+#' roads <- terra::vect(matrix(c(0, 1, 4, 1), ncol = 2, byrow = TRUE),
+#'   type = "lines", crs = "EPSG:3857")
+#' escape <- terra::vect(data.frame(x = 4, y = 1), geom = c("x", "y"), crs = "EPSG:3857")
+#' make_road_mask(roads, escape, road_buffer_m = 0.1, escape_buffer_m = 0.2)
 #' @export
 make_road_mask <- function(
   roads,
@@ -56,6 +61,14 @@ make_road_mask <- function(
 #'   for large regions or exploratory runs.
 #' @param seed Random seed used when `max_origins` is supplied.
 #' @return A point `SpatVector` of road-based evacuation origins.
+#' @examples
+#' r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+#'   vals = 1, crs = "EPSG:3857")
+#' grid <- make_evac_grid(terra::as.polygons(r, dissolve = TRUE), resolution = 1)
+#' roads <- terra::vect(matrix(c(0, 2, 4, 2), ncol = 2, byrow = TRUE),
+#'   type = "lines", crs = "EPSG:3857")
+#' roads_buffer <- terra::buffer(roads, 0.2)
+#' make_road_origins(grid, roads_buffer, max_origins = 3, seed = 1)
 #' @export
 make_road_origins <- function(
     evac_grid,
@@ -108,6 +121,10 @@ make_road_origins <- function(
 #' @param resolution Optional target DEM resolution before conductance creation.
 #' @param method Conductance method. Currently only `"slope"` is implemented.
 #' @return A `leastcostpath` conductance surface object.
+#' @examples
+#' dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
+#'   vals = 1, crs = "EPSG:3857")
+#' make_conductance_surface(dem)
 #' @export
 make_conductance_surface <- function(
   dem,

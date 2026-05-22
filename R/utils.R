@@ -11,6 +11,9 @@
 #'
 #' @param x A `SpatRaster`, `SpatVector`, or file path.
 #' @return A `SpatRaster` or `SpatVector`.
+#' @examples
+#' r <- terra::rast(nrows = 2, ncols = 2, vals = 1)
+#' read_spatial(r)
 #' @export
 read_spatial <- function(x) {
   if (inherits(x, c("SpatRaster", "SpatVector"))) {

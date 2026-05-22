@@ -37,3 +37,11 @@ inundation layer is split into land and water masks. The resulting object can
 be passed to \code{find_escape_points()} so escape/safety points are generated from
 a boundary that includes relevant road corridors as well as the tsunami zone.
 }
+\examples{
+r <- terra::rast(nrows = 4, ncols = 4, xmin = 0, xmax = 4, ymin = 0, ymax = 4,
+  vals = 1, crs = "EPSG:3857")
+zone <- terra::as.polygons(r, dissolve = TRUE)
+roads <- terra::vect(matrix(c(0, 2, 4, 2), ncol = 2, byrow = TRUE),
+  type = "lines", crs = "EPSG:3857")
+make_road_aware_escape_zone(zone, roads, road_buffer_m = 0.1)
+}

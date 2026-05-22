@@ -12,6 +12,21 @@
 #' @param resolution_fine Fine output resolution.
 #' @param distance_col Name of distance column in `distance_points`.
 #' @return A `SpatRaster` distance surface.
+#' @examples
+#' if (requireNamespace("fields", quietly = TRUE)) {
+#'   pts <- terra::vect(
+#'     data.frame(
+#'       x = c(0, 1, 0, 1, 0.5, 1.5),
+#'       y = c(0, 0, 1, 1, 0.5, 1.5),
+#'       distance = c(0, 5, 10, 15, 7, 20)
+#'     ),
+#'     geom = c("x", "y"),
+#'     crs = "EPSG:3857"
+#'   )
+#'   area <- terra::as.polygons(terra::rast(nrows = 2, ncols = 2, xmin = -1, xmax = 2,
+#'     ymin = -1, ymax = 2, vals = 1, crs = "EPSG:3857"), dissolve = TRUE)
+#'   interpolate_distance_surface(pts, area, area, resolution_coarse = 0.5, resolution_fine = 1)
+#' }
 #' @export
 interpolate_distance_surface <- function(
   distance_points,
@@ -52,7 +67,10 @@ interpolate_distance_surface <- function(
   }
 
   tps <- fields::Tps(xy[keep, ], v[keep])
-  dist_grid <- terra::interpolate(dist_grid, tps)
+  predict_tps <- function(model, x, ...) {
+    fields::predict.Krig(model, as.matrix(x[, c("x", "y")]))
+  }
+  dist_grid <- terra::interpolate(dist_grid, tps, fun = predict_tps)
   dist_grid[dist_grid < 0] <- 0
 
   r2 <- terra::rast(

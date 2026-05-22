@@ -37,3 +37,9 @@ Converts an inundation raster to a binary hazard-zone raster or polygon using
 a threshold. This is intentionally general so users can adapt it to tsunami,
 flood, storm-surge, or other hazard layers.
 }
+\examples{
+r <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5)
+terra::values(r) <- c(rep(0, 12), rep(1, 13))
+zone <- prepare_hazard_zone(r, threshold = 0, as_polygon = TRUE)
+zone
+}

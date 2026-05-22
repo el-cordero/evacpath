@@ -14,6 +14,11 @@
 #' @param as_polygon Logical. If `TRUE`, return a polygon hazard zone.
 #' @param dissolve Logical. If `TRUE`, dissolve polygon pieces.
 #' @return A binary `SpatRaster` or polygon `SpatVector`.
+#' @examples
+#' r <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5)
+#' terra::values(r) <- c(rep(0, 12), rep(1, 13))
+#' zone <- prepare_hazard_zone(r, threshold = 0, as_polygon = TRUE)
+#' zone
 #' @export
 prepare_hazard_zone <- function(
   inundation,
@@ -64,6 +69,17 @@ prepare_hazard_zone <- function(
 #'   `list(field = "man_made", values = "pier")`.
 #' @param target_crs Optional output CRS.
 #' @return A cleaned `SpatVector`.
+#' @examples
+#' roads <- terra::vect(
+#'   list(
+#'     matrix(c(0, 0, 0, 1), ncol = 2, byrow = TRUE),
+#'     matrix(c(1, 0, 1, 1), ncol = 2, byrow = TRUE)
+#'   ),
+#'   type = "lines",
+#'   crs = "EPSG:3857"
+#' )
+#' roads$kind <- c("road", "pier")
+#' clean_roads(roads, exclude = list(field = "kind", values = "pier"))
 #' @export
 clean_roads <- function(roads, exclude = NULL, target_crs = NULL) {
   roads <- read_spatial(roads)
@@ -103,6 +119,14 @@ clean_roads <- function(roads, exclude = NULL, target_crs = NULL) {
 #' @param dissolve_hazard Logical. Dissolve hazard polygon pieces.
 #' @param road_exclude Optional road exclusion list passed to `clean_roads()`.
 #' @return A named list with `hazard_zone`, `roads`, and `dem`.
+#' @examples
+#' dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
+#'   vals = 1, crs = "EPSG:3857")
+#' hazard <- terra::as.polygons(dem, dissolve = TRUE)
+#' roads <- terra::vect(matrix(c(0, 2.5, 5, 2.5), ncol = 2, byrow = TRUE),
+#'   type = "lines", crs = "EPSG:3857")
+#' inputs <- prepare_evac_inputs(hazard, roads, dem)
+#' names(inputs)
 #' @export
 prepare_evac_inputs <- function(
   hazard_zone,
