@@ -33,6 +33,7 @@ Desktop.ini
 *.temp
 *.bak
 *.swp
+Rplots.pdf
 ~$*
 
 # Local data and outputs
@@ -71,3 +72,5 @@ figs/
 # Allow small packaged example data if needed
 !inst/extdata/
 !inst/extdata/*
+/doc/
+/Meta/

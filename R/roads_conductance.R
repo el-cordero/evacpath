@@ -68,7 +68,8 @@ make_road_mask <- function(
 #' roads <- terra::vect(matrix(c(0, 2, 4, 2), ncol = 2, byrow = TRUE),
 #'   type = "lines", crs = "EPSG:3857")
 #' roads_buffer <- terra::buffer(roads, 0.2)
-#' make_road_origins(grid, roads_buffer, max_origins = 3, seed = 1)
+#' make_road_origins(grid, roads_buffer, hazard_zone = terra::as.polygons(r, dissolve = TRUE),
+#'   max_origins = 3, seed = 1)
 #' @export
 make_road_origins <- function(
     evac_grid,
@@ -84,23 +85,21 @@ make_road_origins <- function(
   if (!inherits(roads_buffer, "SpatVector")) {
     stop("`roads_buffer` must be a terra SpatVector.", call. = FALSE)
   }
-  
+
+  if (!is.null(hazard_zone) && !inherits(hazard_zone, "SpatVector")) {
+    stop("`hazard_zone` must be a terra SpatVector.", call. = FALSE)
+  }
+
   candidate_area <- terra::intersect(evac_grid, roads_buffer)
   
   if (!is.null(hazard_zone)) {
-    candidate_area <- terra::crop(
-      candidate_area,
-      hazard_zone    
-    )
+    candidate_area <- terra::intersect(candidate_area, hazard_zone)
   }
   
   origins <- terra::centroids(candidate_area, inside = TRUE)
   
   if (!is.null(hazard_zone)) {
-    origins <- terra::crop(
-      origins,
-      hazard_zone,
-    )
+    origins <- terra::intersect(origins, hazard_zone)
   }
   
   if (!is.null(max_origins) && max_origins < nrow(origins)) {

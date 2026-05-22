@@ -230,6 +230,7 @@ run_evacpath <- function(
   road_points <- make_road_origins(
     evac_grid = evac_grid,
     roads_buffer = road_mask_parts$roads_buffer,
+    hazard_zone = hazard_zone,
     max_origins = max_origins,
     seed = seed
   )

@@ -31,10 +31,12 @@
 #'   usually be passed to `run_evacpath(escape_zone = ...)` or
 #'   `find_escape_points()`.
 #' @examples
-#' dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
-#'   vals = rep(c(-1, 1), length.out = 25), crs = "EPSG:3857")
+#' dem <- terra::rast(nrows = 6, ncols = 6, xmin = 0, xmax = 6, ymin = 0, ymax = 6,
+#'   crs = "EPSG:3857")
+#' xy <- terra::crds(dem, df = TRUE)
+#' terra::values(dem) <- -1.5 + 0.7 * xy$x + 0.2 * sin(xy$y)
 #' inundation <- dem
-#' terra::values(inundation) <- 1
+#' terra::values(inundation) <- ifelse(terra::values(dem) > 0 & terra::values(dem) < 2.5, 1, 0)
 #' zones <- prepare_tsunami_zones(inundation, dem, as_polygon = TRUE)
 #' names(zones)
 #' @export

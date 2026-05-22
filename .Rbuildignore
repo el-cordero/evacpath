@@ -11,3 +11,4 @@
 ^vignettes/_outputs$
 ^cran-comments\.md$
 ^paper$
+^Rplots\.pdf$

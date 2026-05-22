@@ -99,7 +99,8 @@ clean_roads <- function(roads, exclude = NULL, target_crs = NULL) {
     if (!.has_column(roads, exclude$field)) {
       warning("Road exclusion field not found: ", exclude$field, call. = FALSE)
     } else {
-      keep <- !(roads[[exclude$field]] %in% exclude$values)
+      values <- terra::values(roads)[[exclude$field]]
+      keep <- !(values %in% exclude$values)
       keep[is.na(keep)] <- TRUE
       roads <- roads[keep, ]
     }

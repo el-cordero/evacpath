@@ -39,5 +39,6 @@ grid <- make_evac_grid(terra::as.polygons(r, dissolve = TRUE), resolution = 1)
 roads <- terra::vect(matrix(c(0, 2, 4, 2), ncol = 2, byrow = TRUE),
   type = "lines", crs = "EPSG:3857")
 roads_buffer <- terra::buffer(roads, 0.2)
-make_road_origins(grid, roads_buffer, max_origins = 3, seed = 1)
+make_road_origins(grid, roads_buffer, hazard_zone = terra::as.polygons(r, dissolve = TRUE),
+  max_origins = 3, seed = 1)
 }
