@@ -163,7 +163,7 @@ roads <- terra::vect(system.file("extdata/rds.gpkg", package = "evacpath"))
 inundation <- terra::rast(system.file("extdata/tsunami_inundation_depth.tif", package = "evacpath"))
 ```
 
-The detailed diagnostic example is available at `vignettes/diagnostic-example.Rmd` and `inst/examples/diagnostic-example.Rmd`. It walks through each major function separately, including tsunami-specific zone preparation, inset cropping of roads used for escape-point detection, road-aware escape-boundary generation, least-cost-path testing, and final time-grid mapping.
+The detailed diagnostic example is available at `vignettes/diagnostic-example.Rmd`. It walks through each major function separately, including tsunami-specific zone preparation, inset cropping of roads used for escape-point detection, road-aware escape-boundary generation, least-cost-path testing, and final time-grid mapping.
 
 The README figures are generated with `terra` plotting code in `inst/scripts/make-readme-figures.R`. The figures use a focused projected window (`x = 669000` to `675000`, `y = 9223000` to `9225000`) so the examples stay readable.
 

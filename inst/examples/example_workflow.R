@@ -1,6 +1,6 @@
 # Example workflow ---------------------------------------------------
-# This is a compact version of the diagnostic workflow. For full QA/QC, see
-# diagnostic-example.Rmd or vignettes/diagnostic-example.Rmd.
+# This is a compact version of the diagnostic workflow. For full quality
+# assurance and quality control, see vignettes/diagnostic-example.Rmd.
 
 library(terra)
 library(evacpath)

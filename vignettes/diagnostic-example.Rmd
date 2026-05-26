@@ -28,19 +28,21 @@ params:
   seed: 23401
   output_dir: "_outputs/example"
 vignette: >
+  %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{Evacuation workflow: function-by-function diagnostics}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 8,
-  fig.height = 6,
+  fig.width = 7.5,
+  fig.height = 3,
+  out.width = "100%",
   dpi = 120
 )
+options(width = 72)
 ```
 
 This vignette is a diagnostic walkthrough for the example tsunami-evacuation workflow. It is intentionally more detailed than a normal user vignette because its purpose is to test every major `evacpath` function independently before trusting the high-level `run_evacpath()` wrapper.
@@ -67,6 +69,8 @@ To run the full diagnostic workflow locally:
 ```{r render-command, eval = FALSE}
 rmarkdown::render(
   "vignettes/diagnostic-example.Rmd",
+  output_format = rmarkdown::pdf_document(toc = TRUE, number_sections = TRUE),
+  output_file = "diagnostic-example.pdf",
   params = list(
     run_diagnostics = TRUE,
     run_lcp = TRUE,
@@ -87,6 +91,8 @@ For a faster diagnostic that stops before least-cost paths:
 ```{r render-fast, eval = FALSE}
 rmarkdown::render(
   "vignettes/diagnostic-example.Rmd",
+  output_format = rmarkdown::pdf_document(toc = TRUE, number_sections = TRUE),
+  output_file = "diagnostic-example-fast.pdf",
   params = list(
     run_diagnostics = TRUE,
     run_lcp = FALSE,
@@ -95,7 +101,7 @@ rmarkdown::render(
 )
 ```
 
-# 1. Setup
+# Setup
 
 ```{r setup}
 # This loader works both when the package is installed and during local package development.
@@ -103,6 +109,8 @@ if (requireNamespace("evacpath", quietly = TRUE)) {
   library(evacpath)
 } else if (requireNamespace("devtools", quietly = TRUE) && file.exists("DESCRIPTION")) {
   devtools::load_all(".")
+} else if (requireNamespace("devtools", quietly = TRUE) && file.exists(file.path("..", "DESCRIPTION"))) {
+  devtools::load_all("..")
 } else if (requireNamespace("devtools", quietly = TRUE) && file.exists(file.path("evacpath", "DESCRIPTION"))) {
   devtools::load_all("evacpath")
 } else {
@@ -138,7 +146,7 @@ run_diagnostics
 run_lcp
 ```
 
-# 2. Locate example input files
+# Locate example input files
 
 The diagnostic expects these files:
 
@@ -189,7 +197,7 @@ example_data_available
 
 If `example_data_available` is `FALSE`, check `params` or use the packaged files in `inst/extdata/`.
 
-# 3. Read the spatial inputs with `read_spatial()`
+# Read Spatial Inputs
 
 `read_spatial()` accepts a file path or an existing `terra` object. Raster formats are read with `terra::rast()` and vector formats are read with `terra::vect()`.
 
@@ -209,7 +217,7 @@ list(
 )
 ```
 
-## 3.1 Raw input diagnostics
+## Raw input diagnostics
 
 Before modeling, inspect CRS, extent, resolution, raster value ranges, and road attributes.
 
@@ -240,14 +248,14 @@ cat("Inundation range:\n")
 print(terra::global(inundation_raw, fun = range, na.rm = TRUE))
 ```
 
-```{r plot-raw-inputs, eval = run_diagnostics && example_data_available, fig.height = 7}
+```{r plot-raw-inputs, eval = run_diagnostics && example_data_available, fig.width = 7.5, fig.height = 2.2}
 oldpar <- par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
 plot(dem_raw, main = "Raw DEM")
 plot(inundation_raw, main = "Raw inundation depth")
 par(oldpar)
 ```
 
-# 4. Clean roads with `clean_roads()`
+# Clean Roads
 
 This is where region-specific road filtering belongs. In the packaged example, piers are excluded because they can create misleading road-water intersections.
 
@@ -273,7 +281,7 @@ nrow(roads_raw)
 nrow(roads_clean)
 ```
 
-# 5. Prepare tsunami zones with `prepare_tsunami_zones()`
+# Prepare Tsunami Zones
 
 This is the critical tsunami-specific step. The old script created a land mask, water mask, land-only TEZ, and then a TEZ-plus-water layer. The package makes that separation explicit.
 
@@ -302,22 +310,22 @@ cat("Land-only hazard-zone polygons:", nrow(zones$hazard_zone), "\n")
 cat("Water-combined escape-zone polygons:", nrow(zones$escape_zone), "\n")
 ```
 
-## 5.1 Check the land/water classification
+## Check the land/water classification
 
 If land and water are reversed, change `dem_sign_multiplier` from `1` to `-1` or adjust the thresholds.
 
-```{r land-water-check, eval = run_diagnostics && example_data_available, fig.height = 7}
+```{r land-water-check, eval = run_diagnostics && example_data_available, fig.width = 7.5, fig.height = 2.2}
 oldpar <- par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
 plot(zones$land_mask, col = "grey85", legend = FALSE, main = "DEM-derived land mask")
 plot(zones$water_mask, col = "lightskyblue1", legend = FALSE, main = "DEM-derived water mask")
 par(oldpar)
 ```
 
-## 5.2 Check the two tsunami zones
+## Check the two tsunami zones
 
 The land-only zone is for origins and final mapped evacuation time. The water-combined zone is the base zone for escape-point detection.
 
-```{r plot-tsunami-zones, eval = run_diagnostics && example_data_available, fig.height = 7}
+```{r plot-tsunami-zones, eval = run_diagnostics && example_data_available, fig.width = 7.5, fig.height = 2.2}
 oldpar <- par(mfrow = c(1, 2), mar = c(3, 3, 3, 5), las = 1)
 plot(zones$hazard_zone, col = "tomato", border = NA, main = "hazard_zone: land-only TEZ")
 plot(zones$escape_zone, col = "grey90", border = NA, main = "escape_zone: TEZ + water")
@@ -325,7 +333,7 @@ plot(zones$hazard_zone, add = TRUE, col = "tomato", border = NA)
 par(oldpar)
 ```
 
-# 6. Crop roads to an inner extent before escape-point detection
+# Crop roads to an inner extent before escape-point detection
 
 If the road dataset extends beyond the reliable hazard-zone coverage, roads can intersect the artificial rectangular study-area boundary. Those intersections are not real escape points. The fix is to crop the roads used for escape-point detection to a slightly inset extent. The x and y insets are controlled separately.
 
@@ -344,7 +352,7 @@ cat("Clean roads:", nrow(roads_clean), "\n")
 cat("Roads used for escape-point detection:", nrow(roads_for_escape), "\n")
 ```
 
-```{r plot-roads-inner-extent, eval = run_diagnostics && example_data_available, fig.height = 7}
+```{r plot-roads-inner-extent, eval = run_diagnostics && example_data_available, fig.width = 7.5, fig.height = 2.4}
 plot(zones$escape_zone, col = "grey92", border = "grey60", main = "Roads cropped to inset extent for escape detection")
 plot(roads_clean, add = TRUE, col = adjustcolor("red", alpha.f = 0.25), lwd = 0.35)
 plot(roads_for_escape, add = TRUE, col = "black", lwd = 0.45)
@@ -359,7 +367,7 @@ legend(
 )
 ```
 
-# 7. Combine buffered roads with the escape zone
+# Combine buffered roads with the escape zone
 
 This is the second major correction. The buffered roads should be combined with the tsunami escape zone **before** escape points are generated. Otherwise, bridge, causeway, or walkway segments over water can be lost because the land and water masks do not always represent the accessible transportation surface.
 
@@ -380,13 +388,13 @@ assert_true(nrow(escape_boundary_zone) > 0, "escape_boundary_zone has no feature
 nrow(escape_boundary_zone)
 ```
 
-```{r plot-road-aware-zone, eval = run_diagnostics && example_data_available, fig.height = 7}
+```{r plot-road-aware-zone, eval = run_diagnostics && example_data_available, fig.width = 7.5, fig.height = 2.4}
 plot(escape_boundary_zone, col = "grey90", border = NA, main = "Road-aware escape-boundary zone")
 plot(zones$hazard_zone, add = TRUE, col = adjustcolor("tomato", alpha.f = 0.45), border = NA)
 plot(roads_for_escape, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.45), lwd = 0.35)
 ```
 
-# 8. Compare escape-point methods
+# Compare escape-point methods
 
 This section intentionally compares three methods:
 
@@ -430,7 +438,7 @@ comparison
 assert_true(nrow(escape_points) > 0, "Preferred escape-point calculation returned no points.")
 ```
 
-```{r plot-escape-comparison, eval = run_diagnostics && example_data_available, fig.height = 8}
+```{r plot-escape-comparison, eval = run_diagnostics && example_data_available, fig.width = 7.5, fig.height = 2.4}
 oldpar <- par(mfrow = c(1, 3))
 
 plot(zones$hazard_zone, col = "grey90", border = "grey40", main = "Wrong\nland-only boundary")
@@ -467,7 +475,7 @@ dem <- zones$dem
 roads <- roads_clean
 ```
 
-# 9. Prepare core inputs with `prepare_evac_inputs()`
+# Prepare Core Inputs
 
 `prepare_evac_inputs()` reads, cleans, projects, and converts the land-only `hazard_zone` into a polygon if needed. It does not create the road-aware escape boundary; that is handled separately above.
 
@@ -491,7 +499,7 @@ assert_true(is_spatvector(roads), "Prepared roads are not a SpatVector.")
 assert_true(is_spatraster(dem), "Prepared DEM is not a SpatRaster.")
 ```
 
-# 10. Create the evacuation grid with `make_evac_grid()`
+# Create the Evacuation Grid
 
 The evacuation grid should be created from the land-only `hazard_zone`, not the water-combined or road-aware escape zone.
 
@@ -516,7 +524,7 @@ plot(evac_grid, add = TRUE, border = adjustcolor("black", alpha.f = 0.25), col =
 plot(roads, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.45), lwd = 0.35)
 ```
 
-# 11. Create the road mask with `make_road_mask()`
+# Create the Road Mask
 
 `make_road_mask()` buffers the roads and preferred escape points, then combines them. The mask constrains least-cost movement to the road/pathway network while still allowing access around escape points.
 
@@ -544,7 +552,7 @@ plot(road_mask, add = TRUE, col = adjustcolor("grey30", alpha.f = 0.35), border 
 plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
 ```
 
-# 12. Create road origin points with `make_road_origins()`
+# Create Road Origin Points
 
 Origins should be road-based points inside the land-only inundation zone.
 
@@ -570,7 +578,7 @@ plot(road_points, add = TRUE, pch = 21, bg = "dodgerblue", col = "black", cex = 
 plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
 ```
 
-# 13. Create the conductance surface with `make_conductance_surface()`
+# Create the Conductance Surface
 
 The conductance surface is built from the DEM but masked to the road-constrained movement area. This is the expensive part. `dem_resolution` can be coarsened for testing.
 
@@ -598,7 +606,7 @@ plot(roads, add = TRUE, col = adjustcolor("grey20", alpha.f = 1), lwd = 0.35)
 plot(escape_points, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
 ```
 
-# 14. Calculate least-cost distance with `calc_min_distance_to_safety()`
+# Calculate Least-Cost Distance
 
 This section is optional because it can be slow for large study areas. The packaged example area is small, so the default parameters use all available origins and destinations.
 
@@ -637,7 +645,7 @@ plot(roads, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.30), lwd = 0.35)
 plot(distance_points, "distance", add = TRUE)
 ```
 
-# 15. Convert distance to time with `calc_evac_time()`
+# Convert Distance to Time
 
 `calc_evac_time()` converts distance to time using a walking speed. The default paper-style value is 1.22 m/s, but local planning scenarios should modify it.
 
@@ -653,7 +661,7 @@ data.frame(
 )
 ```
 
-# 16. Create evacuation polygons with `make_evac_polygons()`
+# Create Evacuation Polygons
 
 `make_evac_polygons()` converts the distance points to Voronoi polygons, calculates evacuation time, and clips the result to the selected output area. For the broad time grid, the clip area should be the land-only `hazard_zone`.
 
@@ -671,13 +679,13 @@ assert_true("EvacTimeAvg" %in% names(evac_polygons), "EvacTimeAvg field is missi
 summary(evac_polygons$EvacTimeAvg)
 ```
 
-```{r plot-evac-polygons, eval = run_diagnostics && example_data_available && run_lcp, fig.height = 7}
+```{r plot-evac-polygons, eval = run_diagnostics && example_data_available && run_lcp, fig.width = 7.5, fig.height = 3.2}
 plot(evac_polygons, "EvacTimeAvg", border = NA, main = "Evacuation-time polygons")
 plot(roads, add = TRUE, col = adjustcolor("grey20", alpha.f = 0.30), lwd = 0.35)
 plot(escape_points_ltd, add = TRUE, pch = 22, bg = "red", col = "black", cex = 0.45)
 ```
 
-# 17. Run the high-level wrapper with `run_evacpath()`
+# Run the High-Level Wrapper
 
 After the individual steps work, the same logic should run through `run_evacpath()`. The key tsunami-specific arguments are:
 
@@ -689,7 +697,7 @@ escape_roads_inset_y_m = 50
 road_aware_escape_zone = TRUE
 ```
 
-```{r run-wrapper, eval = run_diagnostics && example_data_available && run_lcp, message=FALSE,echo=FALSE, eval = FALSE}
+```{r run-wrapper, eval = run_diagnostics && example_data_available && run_lcp, message=FALSE, echo=FALSE}
 result <- run_evacpath(
   hazard_zone = zones$hazard_zone,
   escape_zone = zones$escape_zone,
@@ -725,11 +733,11 @@ assert_true("time_grid" %in% names(result), "Result does not contain time_grid."
 assert_true("EvacTimeAvg" %in% names(result$time_grid), "Result time_grid lacks EvacTimeAvg.")
 ```
 
-# 18. Final map check
+# Final map check
 
 This map uses land/water as background, the land-only evacuation-time polygons as the main layer, and the preferred escape points as squares.
 
-```{r final-map, eval = run_diagnostics && example_data_available && run_lcp, fig.width = 9, fig.height = 7, eval = FALSE}
+```{r final-map, eval = run_diagnostics && example_data_available && run_lcp, fig.width = 7.5, fig.height = 3.4}
 evac_map <- result$time_grid
 roads_plot <- crop(result$roads, evac_map)
 escape_plot <- crop(result$escape_points, evac_map)
@@ -795,11 +803,11 @@ legend(
 par(oldpar)
 ```
 
-# 19. Write outputs with `write_evac_outputs()`
+# Write Outputs
 
 `write_evac_outputs()` writes the major spatial outputs from a completed result object. This should only run after the diagnostic workflow succeeds.
 
-```{r write-outputs, eval = run_diagnostics && example_data_available && run_lcp, eval = FALSE}
+```{r write-outputs, eval = run_diagnostics && example_data_available && run_lcp}
 write_evac_outputs(
   result,
   output_dir = params$output_dir,
@@ -809,7 +817,7 @@ write_evac_outputs(
 list.files(params$output_dir, full.names = TRUE)
 ```
 
-# 20. Troubleshooting checklist
+# Troubleshooting checklist
 
 If escape points look wrong, check these first:
 

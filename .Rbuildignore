@@ -9,6 +9,11 @@
 ^Meta$
 ^_outputs$
 ^vignettes/_outputs$
+^vignettes/.*\.pdf$
+^vignettes/.*\.tex$
+^vignettes/.*\.aux$
+^vignettes/.*\.toc$
+^vignettes/.*_files$
 ^cran-comments\.md$
 ^paper$
 ^Rplots\.pdf$

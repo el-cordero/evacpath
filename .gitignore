@@ -15,6 +15,9 @@ doc/
 # Vignette/cache outputs
 vignettes/*.html
 vignettes/*.pdf
+vignettes/*.tex
+vignettes/*.aux
+vignettes/*.toc
 vignettes/*_cache/
 vignettes/*_files/
 *_cache/
