@@ -1,15 +1,10 @@
 ## R CMD check results
 
-0 errors | 0 warnings | 2 notes
+0 errors | 0 warnings | 1 note
 
 * checking CRAN incoming feasibility ... NOTE
-  New submission.
-
-* checking for future file timestamps ... NOTE
-  unable to verify current time
-
-This appears to be a local check-environment issue. The source package was built
-immediately before checking.
+  The maintainer email address has changed from elvin.cordero1@upr.edu to
+  elvin.cordero@seamountgeo.com.
 
 ## Resubmission
 
@@ -24,4 +19,4 @@ This version updates the existing CRAN package and addresses CRAN feedback by:
 
 ## Reverse dependencies
 
-There are no reverse dependencies because this is a new package.
+There are no known reverse dependencies.
