@@ -52,6 +52,21 @@
 #'   boundary many times.
 #' @param seed Random seed used when `max_origins` or `max_destinations` is supplied.
 #' @param walking_speed_mps Walking speed in meters per second.
+#'   This controls conversion of modeled route distances into evacuation times.
+#'   It does not change route geometry.
+#' @param lcp_cost_function Character string or function passed to
+#'   [leastcostpath::create_slope_cs()]. This changes conductance and may change
+#'   route geometry.
+#' @param lcp_neighbours Neighbourhood passed to
+#'   [leastcostpath::create_slope_cs()]. Use `4`, `8`, `16`, `32`, `48`, or a
+#'   custom matrix accepted by `leastcostpath`.
+#' @param lcp_crit_slope Numeric critical slope passed to
+#'   [leastcostpath::create_slope_cs()].
+#' @param lcp_max_slope Optional numeric maximum traversable slope passed to
+#'   [leastcostpath::create_slope_cs()].
+#' @param lcp_args Named list of additional arguments passed to
+#'   [leastcostpath::create_slope_cs()], such as `exaggeration`. Explicit
+#'   `lcp_*` arguments take precedence over duplicate entries in this list.
 #' @param clip_mode Output clipping mode. The default `"hazard"` creates a
 #'   continuous time-grid polygon surface clipped to the land-only hazard zone.
 #'   Use `"road_hazard"` for the older road-buffer-limited output,
@@ -60,6 +75,9 @@
 #' @param progress_every Integer. Print progress every `n` origins when `progress = TRUE`.
 #' @param lcp_check_locations Logical passed to `leastcostpath::create_lcp()`.
 #'   Default is `FALSE` for speed after projection/cropping checks.
+#' @param keep_routes Logical. If `TRUE`, retain the selected least-cost route
+#'   for each reachable origin in `result$routes`. The default is `FALSE` to
+#'   avoid the additional memory cost.
 #' @return An `evacpath_result` list containing spatial outputs and parameters.
 #' @examples
 #' dem <- terra::rast(nrows = 7, ncols = 7, xmin = 0, xmax = 7, ymin = 0, ymax = 7,
@@ -108,12 +126,31 @@ run_evacpath <- function(
   max_destinations = NULL,
   seed = 23401,
   walking_speed_mps = 1.22,
+  lcp_cost_function = "tobler",
+  lcp_neighbours = 16,
+  lcp_crit_slope = 12,
+  lcp_max_slope = NULL,
+  lcp_args = list(),
   clip_mode = c("hazard", "road_hazard", "hazard_plus_roads", "none"),
   progress = FALSE,
   progress_every = 1L,
-  lcp_check_locations = FALSE
+  lcp_check_locations = FALSE,
+  keep_routes = FALSE
 ) {
   clip_mode <- match.arg(clip_mode)
+  .validate_lcp_settings(
+    lcp_cost_function = lcp_cost_function,
+    lcp_neighbours = lcp_neighbours,
+    lcp_crit_slope = lcp_crit_slope,
+    lcp_max_slope = lcp_max_slope
+  )
+
+  if (!is.list(lcp_args)) {
+    stop("`lcp_args` must be a named list.", call. = FALSE)
+  }
+  if (length(lcp_args) > 0L && (is.null(names(lcp_args)) || any(names(lcp_args) == ""))) {
+    stop("`lcp_args` must be a named list.", call. = FALSE)
+  }
 
   inputs <- prepare_evac_inputs(
     hazard_zone = hazard_zone,
@@ -221,10 +258,26 @@ run_evacpath <- function(
     return_components = TRUE
   )
 
-  conductance <- make_conductance_surface(
-    dem = dem,
-    road_mask = road_mask_parts$mask,
-    resolution = dem_resolution
+  explicit_lcp_names <- c(
+    "lcp_cost_function", "lcp_neighbours", "lcp_crit_slope", "lcp_max_slope",
+    "cost_function", "neighbours", "crit_slope", "max_slope", "x"
+  )
+  lcp_args <- lcp_args[setdiff(names(lcp_args), explicit_lcp_names)]
+
+  conductance <- do.call(
+    make_conductance_surface,
+    c(
+      list(
+        dem = dem,
+        road_mask = road_mask_parts$mask,
+        resolution = dem_resolution,
+        lcp_cost_function = lcp_cost_function,
+        lcp_neighbours = lcp_neighbours,
+        lcp_crit_slope = lcp_crit_slope,
+        lcp_max_slope = lcp_max_slope
+      ),
+      lcp_args
+    )
   )
 
   road_points <- make_road_origins(
@@ -239,14 +292,25 @@ run_evacpath <- function(
     message("Road origins: ", nrow(road_points))
   }
 
-  distance_points <- calc_min_distance_to_safety(
+  distance_result <- calc_min_distance_to_safety(
     cs = conductance,
     origins = road_points,
     destinations = escape_points,
     progress = progress,
     progress_every = progress_every,
-    check_locations = lcp_check_locations
+    check_locations = lcp_check_locations,
+    return_routes = keep_routes
   )
+
+  if (isTRUE(keep_routes)) {
+    distance_points <- distance_result$distance_points
+    routes <- distance_result$routes
+    unreachable_origins <- distance_result$unreachable_origins
+  } else {
+    distance_points <- distance_result
+    routes <- NULL
+    unreachable_origins <- NULL
+  }
 
   clip_area <- make_output_clip_area(
     hazard_zone = hazard_zone,
@@ -282,9 +346,15 @@ run_evacpath <- function(
       max_destinations = max_destinations,
       seed = seed,
       walking_speed_mps = walking_speed_mps,
+      lcp_cost_function = lcp_cost_function,
+      lcp_neighbours = lcp_neighbours,
+      lcp_crit_slope = lcp_crit_slope,
+      lcp_max_slope = lcp_max_slope,
+      lcp_args = lcp_args,
       clip_mode = clip_mode,
       progress_every = progress_every,
-      lcp_check_locations = lcp_check_locations
+      lcp_check_locations = lcp_check_locations,
+      keep_routes = keep_routes
     ),
     hazard_zone = hazard_zone,
     escape_zone = escape_zone,
@@ -301,6 +371,8 @@ run_evacpath <- function(
     road_points = road_points,
     conductance = conductance,
     distance_points = distance_points,
+    routes = routes,
+    unreachable_origins = unreachable_origins,
     clip_area = clip_area,
     evac_polygons = evac_polygons,
     time_grid = evac_polygons
@@ -363,6 +435,9 @@ print.evacpath_result <- function(x, ...) {
   cat("  - escape_points\n")
   cat("  - road_points\n")
   cat("  - distance_points\n")
+  if (!is.null(x$routes)) {
+    cat("  - routes\n")
+  }
   cat("  - evac_polygons / time_grid\n")
   invisible(x)
 }

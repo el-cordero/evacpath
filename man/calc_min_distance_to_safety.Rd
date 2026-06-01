@@ -11,7 +11,8 @@ calc_min_distance_to_safety(
   include_destinations = TRUE,
   progress = FALSE,
   progress_every = 1L,
-  check_locations = FALSE
+  check_locations = FALSE,
+  return_routes = FALSE
 )
 }
 \arguments{
@@ -29,9 +30,16 @@ calc_min_distance_to_safety(
 
 \item{check_locations}{Logical passed to \code{leastcostpath::create_lcp()}. The default
 is \code{FALSE} for speed after inputs have already been projected and cropped.}
+
+\item{return_routes}{Logical. If \code{TRUE}, return the selected shortest route
+for each reachable origin alongside the distance points. The default is
+\code{FALSE} to preserve the original return type and avoid storing route
+geometries when they are not needed.}
 }
 \value{
-A point \code{SpatVector} with columns \code{distance} and \code{type}.
+A point \code{SpatVector} with columns \code{distance} and \code{type}. When
+\code{return_routes = TRUE}, returns a list with \code{distance_points}, \code{routes}, and
+\code{unreachable_origins}.
 }
 \description{
 For each origin point, calculates least-cost paths to all candidate safety

@@ -126,3 +126,43 @@ read_spatial <- function(x) {
   }
   invisible(x)
 }
+
+.validate_lcp_settings <- function(
+  lcp_cost_function,
+  lcp_neighbours,
+  lcp_crit_slope,
+  lcp_max_slope
+) {
+  if (
+    !is.function(lcp_cost_function) &&
+      !(is.character(lcp_cost_function) && length(lcp_cost_function) == 1L &&
+          !is.na(lcp_cost_function) && nzchar(lcp_cost_function))
+  ) {
+    stop("`lcp_cost_function` must be a single character string or a function.", call. = FALSE)
+  }
+
+  valid_neighbours <- is.matrix(lcp_neighbours) ||
+    (
+      is.numeric(lcp_neighbours) &&
+        length(lcp_neighbours) == 1L &&
+        !is.na(lcp_neighbours) &&
+        lcp_neighbours %in% c(4, 8, 16, 32, 48)
+    )
+
+  if (!valid_neighbours) {
+    stop("`lcp_neighbours` must be one of 4, 8, 16, 32, 48, or a custom matrix.", call. = FALSE)
+  }
+
+  if (!is.numeric(lcp_crit_slope) || length(lcp_crit_slope) != 1L ||
+      is.na(lcp_crit_slope) || !is.finite(lcp_crit_slope)) {
+    stop("`lcp_crit_slope` must be a single finite numeric value.", call. = FALSE)
+  }
+
+  if (!is.null(lcp_max_slope) &&
+      (!is.numeric(lcp_max_slope) || length(lcp_max_slope) != 1L ||
+        is.na(lcp_max_slope) || !is.finite(lcp_max_slope))) {
+    stop("`lcp_max_slope` must be NULL or a single finite numeric value.", call. = FALSE)
+  }
+
+  invisible(TRUE)
+}

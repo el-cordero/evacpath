@@ -1,3 +1,13 @@
+# evacpath 0.2.0
+
+* Added CRAN installation instructions, the canonical CRAN package page, the CRAN package DOI, and a stable public logo URL to the README.
+* Added `lcp_cost_function`, `lcp_neighbours`, `lcp_crit_slope`, `lcp_max_slope`, and `lcp_args` controls so `make_conductance_surface()` and `run_evacpath()` expose `leastcostpath` slope-surface assumptions.
+* Added opt-in route retention with `calc_min_distance_to_safety(return_routes = TRUE)` and `run_evacpath(keep_routes = TRUE)`.
+* Added `compare_evac_scenarios()` for comparison-ready scenario summaries and combined spatial outputs.
+* Added `map_evac_bottlenecks()` for modeled route-density and high-use corridor mapping.
+* Added `diagnose_evac_model()` and `has_errors()` for spatial quality assurance and quality control checks.
+* Added `validate_evac_routes()` for buffer-overlap, Hausdorff-distance, and optional path-deviation-index comparisons against reference routes.
+
 # evacpath 0.1.1
 
 * Added package website and bug-report URLs.

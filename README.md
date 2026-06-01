@@ -1,6 +1,8 @@
-# evacpath <img src="man/figures/logo.png" align="right" height="140" alt="evacpath logo" />
+# evacpath <img src="https://raw.githubusercontent.com/el-cordero/evacpath/main/man/figures/logo.png" align="right" height="140" alt="evacpath logo" />
 
 `evacpath` is an R package for road-constrained pedestrian evacuation modeling using least-cost path analysis. It takes generic hazard, road/pathway, and elevation inputs, then returns distance-to-safety and evacuation-time outputs for any projected study area.
+
+`evacpath` is available from [CRAN](https://cran.r-project.org/web/packages/evacpath/index.html) with a permanent [CRAN package DOI](https://doi.org/10.32614/CRAN.package.evacpath).
 
 The package is designed around a simple idea:
 
@@ -8,9 +10,19 @@ The package is designed around a simple idea:
 
 The workflow builds on open-source least-cost path methods for evacuation planning (Cordero et al. 2025) and uses `leastcostpath` for least-cost path and movement-potential modeling (Lewis 2023; Lewis 2021).
 
-## Current status
+## Installation
 
-This is an initial package scaffold, not a polished CRAN release. It is ready for local development with `devtools::load_all()` and `devtools::document()`.
+Install the released package from CRAN:
+
+```r
+install.packages("evacpath")
+```
+
+Install the development version from GitHub:
+
+```r
+remotes::install_github("el-cordero/evacpath")
+```
 
 ## Core workflow
 
@@ -59,6 +71,10 @@ write_evac_outputs(
 | `calc_evac_time()` | Converts distance to evacuation time. |
 | `make_evac_polygons()` | Creates Voronoi evacuation-distance/time polygons. |
 | `run_evacpath()` | Runs the full workflow. |
+| `compare_evac_scenarios()` | Compares walking-speed and least-cost-path assumptions. |
+| `map_evac_bottlenecks()` | Maps high-use modeled evacuation corridors. |
+| `diagnose_evac_model()` | Runs spatial quality assurance and quality control checks. |
+| `validate_evac_routes()` | Compares modeled routes with reference routes. |
 | `write_evac_outputs()` | Writes the main outputs to disk. |
 
 ## Customizable assumptions
@@ -75,10 +91,19 @@ run_evacpath(
   escape_buffer_m = 5,
   final_road_buffer_m = 3,
   dem_resolution = NULL,
+  lcp_cost_function = "tobler",
+  lcp_neighbours = 16,
+  lcp_crit_slope = 12,
+  lcp_max_slope = NULL,
   walking_speed_mps = 1.22,
   clip_mode = "hazard"
 )
 ```
+
+`walking_speed_mps` controls the conversion from route distance to travel time.
+The `lcp_*` arguments change the conductance surface and can change route
+geometry. Set `keep_routes = TRUE` when you want to retain selected routes for
+bottleneck analysis.
 
 ## Tsunami preprocessing
 
@@ -107,8 +132,8 @@ roads <- clean_roads(
 )
 
 result <- run_evacpath(
-  hazard_zone = zones$hazard_zone,  # land-only TEZ for origins/output
-  escape_zone = zones$escape_zone,  # TEZ + water for true inland escape boundary
+  hazard_zone = zones$hazard_zone,  # land-only tsunami evacuation zone for origins/output
+  escape_zone = zones$escape_zone,  # zone + water for true inland escape boundary
   roads = roads,
   dem = zones$dem,
   target_crs = "EPSG:XXXX",
@@ -118,14 +143,34 @@ result <- run_evacpath(
 
 Do not use the land-only `hazard_zone` to find escape points in tsunami workflows unless you intentionally want the coastline to act as a boundary. In most tsunami cases, use `escape_zone = zones$escape_zone`.
 
+## Scenario comparison
+
+Planning assumptions can be compared without rewriting the workflow:
+
+```r
+comparison <- compare_evac_scenarios(
+  hazard_zone = hazard,
+  roads = roads,
+  dem = dem,
+  target_crs = "EPSG:XXXX",
+  scenarios = list(
+    baseline = list(walking_speed_mps = 1.22),
+    slow_walkers = list(walking_speed_mps = 0.75),
+    conservative_lcp = list(lcp_neighbours = 8, lcp_max_slope = 30)
+  )
+)
+comparison$summary
+```
+
+Use `diagnose_evac_model()` to review spatial inputs, `keep_routes = TRUE` in
+`run_evacpath()` when route geometries are needed, and
+`map_evac_bottlenecks()` to identify high-use modeled corridors.
+
 ## Local development
 
 From the parent directory of the package:
 
 ```r
-install.packages(c("devtools", "terra", "remotes"))
-remotes::install_github("josephlewis/leastcostpath") # if leastcostpath is not on CRAN for your setup
-
 devtools::load_all("evacpath")
 devtools::document("evacpath")
 devtools::check("evacpath")

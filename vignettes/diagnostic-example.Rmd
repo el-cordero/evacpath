@@ -42,7 +42,7 @@ knitr::opts_chunk$set(
   out.width = "100%",
   dpi = 120
 )
-options(width = 72)
+old_options <- options(width = 72)
 ```
 
 This vignette is a diagnostic walkthrough for the example tsunami-evacuation workflow. It is intentionally more detailed than a normal user vignette because its purpose is to test every major `evacpath` function independently before trusting the high-level `run_evacpath()` wrapper.
@@ -874,3 +874,7 @@ Cordero, E., Ruiz Vélez, R., Huérfano Moreno, V., Sherman, C., 2025. Enhancing
 Lewis, J., 2023. leastcostpath: Modelling Pathways and Movement Potential Within a Landscape.
 
 Lewis, J., 2021. Probabilistic Modelling for Incorporating Uncertainty in Least Cost Path Results: a Postdictive Roman Road Case Study. Journal of Archaeological Method and Theory 28, 911-924. https://doi.org/10.1007/s10816-021-09522-w
+
+```{r restore-options, include = FALSE}
+options(old_options)
+```

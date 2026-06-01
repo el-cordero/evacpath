@@ -1,6 +1,6 @@
 Package: evacpath
 Title: Least-Cost Pedestrian Evacuation Modeling
-Version: 0.1.1
+Version: 0.2.0
 Authors@R: c(
     person("Elvin", "Cordero", role = c("aut", "cre"), email = "elvin.cordero@seamountgeo.com")
   )
@@ -28,6 +28,7 @@ Depends:
 Imports:
     terra,
     leastcostpath,
+    sf,
     utils
 Suggests:
     knitr,

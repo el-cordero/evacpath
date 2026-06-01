@@ -30,10 +30,16 @@ run_evacpath(
   max_destinations = NULL,
   seed = 23401,
   walking_speed_mps = 1.22,
+  lcp_cost_function = "tobler",
+  lcp_neighbours = 16,
+  lcp_crit_slope = 12,
+  lcp_max_slope = NULL,
+  lcp_args = list(),
   clip_mode = c("hazard", "road_hazard", "hazard_plus_roads", "none"),
   progress = FALSE,
   progress_every = 1L,
-  lcp_check_locations = FALSE
+  lcp_check_locations = FALSE,
+  keep_routes = FALSE
 )
 }
 \arguments{
@@ -101,7 +107,27 @@ boundary many times.}
 
 \item{seed}{Random seed used when \code{max_origins} or \code{max_destinations} is supplied.}
 
-\item{walking_speed_mps}{Walking speed in meters per second.}
+\item{walking_speed_mps}{Walking speed in meters per second.
+This controls conversion of modeled route distances into evacuation times.
+It does not change route geometry.}
+
+\item{lcp_cost_function}{Character string or function passed to
+\code{\link[leastcostpath:create_slope_cs]{leastcostpath::create_slope_cs()}}. This changes conductance and may change
+route geometry.}
+
+\item{lcp_neighbours}{Neighbourhood passed to
+\code{\link[leastcostpath:create_slope_cs]{leastcostpath::create_slope_cs()}}. Use \code{4}, \code{8}, \code{16}, \code{32}, \code{48}, or a
+custom matrix accepted by \code{leastcostpath}.}
+
+\item{lcp_crit_slope}{Numeric critical slope passed to
+\code{\link[leastcostpath:create_slope_cs]{leastcostpath::create_slope_cs()}}.}
+
+\item{lcp_max_slope}{Optional numeric maximum traversable slope passed to
+\code{\link[leastcostpath:create_slope_cs]{leastcostpath::create_slope_cs()}}.}
+
+\item{lcp_args}{Named list of additional arguments passed to
+\code{\link[leastcostpath:create_slope_cs]{leastcostpath::create_slope_cs()}}, such as \code{exaggeration}. Explicit
+\verb{lcp_*} arguments take precedence over duplicate entries in this list.}
 
 \item{clip_mode}{Output clipping mode. The default \code{"hazard"} creates a
 continuous time-grid polygon surface clipped to the land-only hazard zone.
@@ -114,6 +140,10 @@ Use \code{"road_hazard"} for the older road-buffer-limited output,
 
 \item{lcp_check_locations}{Logical passed to \code{leastcostpath::create_lcp()}.
 Default is \code{FALSE} for speed after projection/cropping checks.}
+
+\item{keep_routes}{Logical. If \code{TRUE}, retain the selected least-cost route
+for each reachable origin in \code{result$routes}. The default is \code{FALSE} to
+avoid the additional memory cost.}
 }
 \value{
 An \code{evacpath_result} list containing spatial outputs and parameters.

@@ -8,7 +8,12 @@ make_conductance_surface(
   dem,
   road_mask = NULL,
   resolution = NULL,
-  method = "slope"
+  method = "slope",
+  lcp_cost_function = "tobler",
+  lcp_neighbours = 16,
+  lcp_crit_slope = 12,
+  lcp_max_slope = NULL,
+  ...
 )
 }
 \arguments{
@@ -19,6 +24,22 @@ make_conductance_surface(
 \item{resolution}{Optional target DEM resolution before conductance creation.}
 
 \item{method}{Conductance method. Currently only \code{"slope"} is implemented.}
+
+\item{lcp_cost_function}{Character string or function passed to
+\code{\link[leastcostpath:create_slope_cs]{leastcostpath::create_slope_cs()}}.}
+
+\item{lcp_neighbours}{Neighbourhood passed to
+\code{\link[leastcostpath:create_slope_cs]{leastcostpath::create_slope_cs()}}. Use \code{4}, \code{8}, \code{16}, \code{32}, \code{48}, or a
+custom matrix accepted by \code{leastcostpath}.}
+
+\item{lcp_crit_slope}{Numeric critical slope passed to
+\code{\link[leastcostpath:create_slope_cs]{leastcostpath::create_slope_cs()}}.}
+
+\item{lcp_max_slope}{Optional numeric maximum slope passed to
+\code{\link[leastcostpath:create_slope_cs]{leastcostpath::create_slope_cs()}}.}
+
+\item{...}{Additional named arguments passed to
+\code{\link[leastcostpath:create_slope_cs]{leastcostpath::create_slope_cs()}}, such as \code{exaggeration}.}
 }
 \value{
 A \code{leastcostpath} conductance surface object.
@@ -30,5 +51,5 @@ surface using \code{leastcostpath}.
 \examples{
 dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
   vals = 1, crs = "EPSG:3857")
-make_conductance_surface(dem)
+make_conductance_surface(dem, lcp_neighbours = 8)
 }

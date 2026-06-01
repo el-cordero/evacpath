@@ -119,18 +119,45 @@ make_road_origins <- function(
 #' @param road_mask Optional road/pathway mask.
 #' @param resolution Optional target DEM resolution before conductance creation.
 #' @param method Conductance method. Currently only `"slope"` is implemented.
+#' @param lcp_cost_function Character string or function passed to
+#'   [leastcostpath::create_slope_cs()].
+#' @param lcp_neighbours Neighbourhood passed to
+#'   [leastcostpath::create_slope_cs()]. Use `4`, `8`, `16`, `32`, `48`, or a
+#'   custom matrix accepted by `leastcostpath`.
+#' @param lcp_crit_slope Numeric critical slope passed to
+#'   [leastcostpath::create_slope_cs()].
+#' @param lcp_max_slope Optional numeric maximum slope passed to
+#'   [leastcostpath::create_slope_cs()].
+#' @param ... Additional named arguments passed to
+#'   [leastcostpath::create_slope_cs()], such as `exaggeration`.
 #' @return A `leastcostpath` conductance surface object.
 #' @examples
 #' dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
 #'   vals = 1, crs = "EPSG:3857")
-#' make_conductance_surface(dem)
+#' make_conductance_surface(dem, lcp_neighbours = 8)
 #' @export
 make_conductance_surface <- function(
   dem,
   road_mask = NULL,
   resolution = NULL,
-  method = "slope"
+  method = "slope",
+  lcp_cost_function = "tobler",
+  lcp_neighbours = 16,
+  lcp_crit_slope = 12,
+  lcp_max_slope = NULL,
+  ...
 ) {
+  if (!is.character(method) || length(method) != 1L || is.na(method) || method != "slope") {
+    stop("`method` must be \"slope\".", call. = FALSE)
+  }
+  method <- match.arg(method, choices = c("slope"))
+  .validate_lcp_settings(
+    lcp_cost_function = lcp_cost_function,
+    lcp_neighbours = lcp_neighbours,
+    lcp_crit_slope = lcp_crit_slope,
+    lcp_max_slope = lcp_max_slope
+  )
+
   dem <- read_spatial(dem)
 
   if (!inherits(dem, "SpatRaster")) {
@@ -147,6 +174,25 @@ make_conductance_surface <- function(
     dem <- terra::mask(dem, road_mask)
   }
 
-  method <- match.arg(method, choices = c("slope"))
-  leastcostpath::create_slope_cs(dem)
+  extra_args <- list(...)
+  if (length(extra_args) > 0L && (is.null(names(extra_args)) || any(names(extra_args) == ""))) {
+    stop("Additional leastcostpath arguments passed through `...` must be named.", call. = FALSE)
+  }
+
+  explicit_names <- c("x", "cost_function", "neighbours", "crit_slope", "max_slope")
+  extra_args <- extra_args[setdiff(names(extra_args), explicit_names)]
+
+  do.call(
+    leastcostpath::create_slope_cs,
+    c(
+      list(
+        x = dem,
+        cost_function = lcp_cost_function,
+        neighbours = lcp_neighbours,
+        crit_slope = lcp_crit_slope,
+        max_slope = lcp_max_slope
+      ),
+      extra_args
+    )
+  )
 }

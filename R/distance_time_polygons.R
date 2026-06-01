@@ -62,7 +62,13 @@ calculate_min_dist <- function(lc_paths_list) {
 #' @param progress_every Integer. Print progress every `n` origins when `progress = TRUE`.
 #' @param check_locations Logical passed to `leastcostpath::create_lcp()`. The default
 #'   is `FALSE` for speed after inputs have already been projected and cropped.
-#' @return A point `SpatVector` with columns `distance` and `type`.
+#' @param return_routes Logical. If `TRUE`, return the selected shortest route
+#'   for each reachable origin alongside the distance points. The default is
+#'   `FALSE` to preserve the original return type and avoid storing route
+#'   geometries when they are not needed.
+#' @return A point `SpatVector` with columns `distance` and `type`. When
+#'   `return_routes = TRUE`, returns a list with `distance_points`, `routes`, and
+#'   `unreachable_origins`.
 #' @examples
 #' dem <- terra::rast(nrows = 5, ncols = 5, xmin = 0, xmax = 5, ymin = 0, ymax = 5,
 #'   vals = 1, crs = "EPSG:3857")
@@ -78,7 +84,8 @@ calc_min_distance_to_safety <- function(
   include_destinations = TRUE,
   progress = FALSE,
   progress_every = 1L,
-  check_locations = FALSE
+  check_locations = FALSE,
+  return_routes = FALSE
 ) {
   origins <- read_spatial(origins)
   destinations <- read_spatial(destinations)
@@ -104,6 +111,8 @@ calc_min_distance_to_safety <- function(
   }
 
   out <- vector("list", nrow(origins))
+  selected_routes <- vector("list", nrow(origins))
+  unreachable <- logical(nrow(origins))
 
   for (i in seq_len(nrow(origins))) {
     if (isTRUE(progress) && (i %% progress_every == 0L || i == 1L || i == nrow(origins))) {
@@ -121,23 +130,33 @@ calc_min_distance_to_safety <- function(
     )
 
     if (is.null(paths)) {
+      unreachable[i] <- TRUE
       next
     }
 
     d <- terra::perim(paths)
-    d <- d[is.finite(d) & d != 0]
+    valid <- is.finite(d) & d != 0
 
-    if (length(d) == 0L) {
+    if (!any(valid)) {
+      unreachable[i] <- TRUE
       next
     }
 
+    best_path <- which(valid)[which.min(d[valid])]
     xy <- terra::crds(origins[i, ], df = TRUE)[1, c("x", "y")]
     out[[i]] <- data.frame(
       x = xy$x,
       y = xy$y,
-      distance = min(d),
+      distance = d[best_path],
       type = "road"
     )
+
+    if (isTRUE(return_routes)) {
+      route <- sf::st_as_sf(paths[best_path, ])
+      route$origin_id <- i
+      route$distance <- d[best_path]
+      selected_routes[[i]] <- route
+    }
   }
 
   out <- do.call(rbind, out)
@@ -159,7 +178,20 @@ calc_min_distance_to_safety <- function(
     out <- rbind(out, dest_out)
   }
 
-  terra::vect(out, geom = c("x", "y"), crs = terra::crs(origins))
+  distance_points <- terra::vect(out, geom = c("x", "y"), crs = terra::crs(origins))
+
+  if (!isTRUE(return_routes)) {
+    return(distance_points)
+  }
+
+  routes <- selected_routes[!vapply(selected_routes, is.null, logical(1))]
+  routes <- if (length(routes) > 0L) do.call(rbind, routes) else NULL
+
+  list(
+    distance_points = distance_points,
+    routes = routes,
+    unreachable_origins = origins[unreachable, ]
+  )
 }
 
 #' Convert distance to evacuation time
