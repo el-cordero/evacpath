@@ -1,8 +1,8 @@
 Package: evacpath
 Title: Least-Cost Pedestrian Evacuation Modeling
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
-    person("Elvin", "Cordero", role = c("aut", "cre"), email = "elvin.cordero1@upr.edu")
+    person("Elvin", "Cordero", role = c("aut", "cre"), email = "elvin.cordero@seamountgeo.com")
   )
 Description: Tools for road-constrained, least-cost pedestrian evacuation modeling.
     The package provides reusable functions for preparing hazard zones, generating
@@ -17,6 +17,9 @@ Description: Tools for road-constrained, least-cost pedestrian evacuation modeli
     Lewis (2021) <doi:10.1007/s10816-021-09522-w>, and Joseph Lewis's
     'leastcostpath' package (2023) <https://CRAN.R-project.org/package=leastcostpath>.
 License: MIT + file LICENSE
+URL: https://github.com/el-cordero/evacpath
+BugReports: https://github.com/el-cordero/evacpath/issues
+Language: en-US
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

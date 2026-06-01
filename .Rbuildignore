@@ -15,5 +15,4 @@
 ^vignettes/.*\.toc$
 ^vignettes/.*_files$
 ^cran-comments\.md$
-^paper$
 ^Rplots\.pdf$

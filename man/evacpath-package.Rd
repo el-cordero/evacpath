@@ -19,8 +19,16 @@ bridge and walkway corridors, \code{find_escape_points()} to identify candidate
 exits, \code{make_conductance_surface()} to build a slope-based conductance surface,
 and \code{run_evacpath()} to run the full workflow.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/el-cordero/evacpath}
+  \item Report bugs at \url{https://github.com/el-cordero/evacpath/issues}
+}
+
+}
 \author{
-\strong{Maintainer}: Elvin Cordero \email{elvin.cordero1@upr.edu}
+\strong{Maintainer}: Elvin Cordero \email{elvin.cordero@seamountgeo.com}
 
 }
 \keyword{package}

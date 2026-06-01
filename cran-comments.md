@@ -11,18 +11,16 @@
 This appears to be a local check-environment issue. The source package was built
 immediately before checking.
 
-## First submission
-
-This is a new submission.
-
 ## Resubmission
 
-This version addresses CRAN feedback by:
+This version updates the existing CRAN package and addresses CRAN feedback by:
 
 * spelling out quality assurance and quality control in DESCRIPTION;
 * adding method references to DESCRIPTION using CRAN's requested DOI and URL format;
 * adding small executable examples for exported functions in the Rd files;
-* restoring graphical parameters after changes in the README figure script and vignette.
+* restoring graphical parameters after changes in the README figure script and vignette;
+* adding the public GitHub repository and issue-tracker URLs;
+* updating the maintainer email address to elvin.cordero@seamountgeo.com.
 
 ## Reverse dependencies
 
