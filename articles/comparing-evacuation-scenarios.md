@@ -77,6 +77,17 @@ comparison <- compare_evac_scenarios(
 comparison$summary
 ```
 
+![Scenario sensitivity in modeled evacuation
+time.](../reference/figures/pkgdown-example-scenarios.png)
+
+Scenario sensitivity in modeled evacuation time.
+
+| Scenario             | Walking speed | Median min. | Mean min. | Maximum min. |
+|:---------------------|--------------:|------------:|----------:|-------------:|
+| baseline             |          1.22 |        7.27 |      9.75 |        22.84 |
+| slow_walkers         |          0.75 |       11.83 |     15.86 |        37.15 |
+| conservative_routing |          1.22 |        7.48 |     10.26 |        23.96 |
+
 ## Diagnose inputs
 
 Diagnostics collect coordinate reference system, geometry, overlap,
@@ -99,6 +110,20 @@ diagnostics
 has_errors(diagnostics)
 ```
 
+The generator also records a compact QA/QC result from the same packaged
+run. It is a snapshot of the supplied inputs and settings, not a general
+guarantee about a new study area.
+
+| QA/QC check            | Result      |
+|:-----------------------|:------------|
+| Errors                 | 0           |
+| Warnings               | 1           |
+| Informational checks   | 2           |
+| Road features          | 193         |
+| Sampled origins        | 40          |
+| Candidate safety exits | 12          |
+| DEM resolution (m)     | 5.12 x 5.12 |
+
 ## Map bottlenecks
 
 Routes are retained only when `keep_routes = TRUE`. This keeps ordinary
@@ -112,3 +137,8 @@ bottlenecks <- map_evac_bottlenecks(evac_result = baseline)
 plot(bottlenecks$density_raster)
 plot(bottlenecks$high_density_polygons, add = TRUE)
 ```
+
+![Modeled high-use corridors from the compact packaged
+example.](../reference/figures/pkgdown-example-corridors.png)
+
+Modeled high-use corridors from the compact packaged example.

@@ -18,9 +18,9 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Comparing evacuation scenarios with evacpath">
 <style>
 :root {
-  --evac-primary: #465a5a;
-  --evac-primary-dark: #2f3d3d;
-  --evac-accent: #b66a2e;
+  --evac-primary: #651d28;
+  --evac-primary-dark: #401018;
+  --evac-accent: #b46a3b;
   --evac-safety: #a94b4d;
   --evac-charcoal: #2f3433;
   --evac-muted: #66706e;
@@ -31,6 +31,12 @@
 body {
   color: var(--evac-charcoal);
   background: var(--evac-bg);
+}
+main h1, main h2, main h3, main h4 {
+  color: var(--evac-primary-dark);
+}
+a {
+  color: var(--evac-primary);
 }
 div.sourceCode pre {
   min-height: 0 !important;
@@ -44,12 +50,41 @@ div.sourceCode pre code span:empty {
   display: none;
 }
 .navbar {
-  border-bottom: 1px solid var(--evac-border);
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.035);
+  background: var(--evac-primary-dark) !important;
+  border-bottom: 1px solid #8d3b46;
+  box-shadow: 0 2px 10px rgba(34, 8, 12, 0.18);
 }
 .navbar-brand {
   font-weight: 700;
   letter-spacing: 0.01em;
+  color: #fffaf7 !important;
+}
+.navbar .nav-link,
+.navbar .nav-link.active,
+.navbar .nav-link:visited {
+  color: #f7e9e4 !important;
+}
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  color: #ffffff !important;
+}
+.navbar .dropdown-menu {
+  background: #fffaf7;
+  border-color: var(--evac-border);
+}
+.navbar .dropdown-item {
+  color: var(--evac-charcoal);
+}
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+  color: #ffffff;
+  background: var(--evac-primary);
+}
+.navbar .navbar-toggler {
+  border-color: #e7b7ad;
+}
+.navbar .navbar-toggler-icon {
+  filter: invert(1);
 }
 .template-home .page-header {
   border-left: none;
@@ -91,9 +126,47 @@ img {
 .table > :not(caption) > * > * {
   border-bottom-color: var(--evac-border);
 }
-a {
+a:not(.nav-link) {
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.14em;
+}
+[data-bs-theme="dark"] body {
+  color: #f4f1ec;
+  background: #1e2422;
+}
+[data-bs-theme="dark"] main h1,
+[data-bs-theme="dark"] main h2,
+[data-bs-theme="dark"] main h3,
+[data-bs-theme="dark"] main h4 {
+  color: #f3c4ba;
+}
+[data-bs-theme="dark"] a:not(.nav-link) {
+  color: #f3c4ba;
+}
+[data-bs-theme="dark"] div.sourceCode pre {
+  color: #f4f1ec;
+  background: #29312e;
+  border-color: #4b5751;
+}
+[data-bs-theme="dark"] .template-article main img,
+[data-bs-theme="dark"] .template-home main img {
+  background: #f8f7f4;
+  border-color: #5a655f;
+}
+[data-bs-theme="dark"] .figcaption,
+[data-bs-theme="dark"] .caption,
+[data-bs-theme="dark"] .template-home .description {
+  color: #c9d2cd;
+}
+[data-bs-theme="dark"] .table {
+  --bs-table-color: #f4f1ec;
+  --bs-table-bg: #1e2422;
+  --bs-table-border-color: #4b5751;
+}
+[data-bs-theme="dark"] .table thead th {
+  color: #f4f1ec;
+  background: #29312e;
+  border-bottom-color: #4b5751;
 }
 </style>
 </head>
@@ -231,6 +304,49 @@ the conductance surface and can change modeled route geometry.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">comparison</span><span class="op">$</span><span class="va">summary</span></span></code></pre></div>
+<div class="float">
+<img src="../reference/figures/pkgdown-example-scenarios.png" alt="Scenario sensitivity in modeled evacuation time."><div class="figcaption">Scenario sensitivity in modeled evacuation
+time.</div>
+</div>
+<table class="table">
+<colgroup>
+<col width="30%">
+<col width="20%">
+<col width="17%">
+<col width="14%">
+<col width="18%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Scenario</th>
+<th align="right">Walking speed</th>
+<th align="right">Median min.</th>
+<th align="right">Mean min.</th>
+<th align="right">Maximum min.</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">baseline</td>
+<td align="right">1.22</td>
+<td align="right">7.27</td>
+<td align="right">9.75</td>
+<td align="right">22.84</td>
+</tr>
+<tr class="even">
+<td align="left">slow_walkers</td>
+<td align="right">0.75</td>
+<td align="right">11.83</td>
+<td align="right">15.86</td>
+<td align="right">37.15</td>
+</tr>
+<tr class="odd">
+<td align="left">conservative_routing</td>
+<td align="right">1.22</td>
+<td align="right">7.48</td>
+<td align="right">10.26</td>
+<td align="right">23.96</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="diagnose-inputs">Diagnose inputs<a class="anchor" aria-label="anchor" href="#diagnose-inputs"></a>
@@ -251,6 +367,45 @@ report.</p>
 <span></span>
 <span><span class="va">diagnostics</span></span>
 <span><span class="fu"><a href="../reference/has_errors.html">has_errors</a></span><span class="op">(</span><span class="va">diagnostics</span><span class="op">)</span></span></code></pre></div>
+<p>The generator also records a compact QA/QC result from the same
+packaged run. It is a snapshot of the supplied inputs and settings, not
+a general guarantee about a new study area.</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">QA/QC check</th>
+<th align="left">Result</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Errors</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="left">Warnings</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Informational checks</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">Road features</td>
+<td align="left">193</td>
+</tr>
+<tr class="odd">
+<td align="left">Sampled origins</td>
+<td align="left">40</td>
+</tr>
+<tr class="even">
+<td align="left">Candidate safety exits</td>
+<td align="left">12</td>
+</tr>
+<tr class="odd">
+<td align="left">DEM resolution (m)</td>
+<td align="left">5.12 x 5.12</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="map-bottlenecks">Map bottlenecks<a class="anchor" aria-label="anchor" href="#map-bottlenecks"></a>
@@ -263,6 +418,10 @@ when it is needed.</p>
 <span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bottlenecks</span><span class="op">$</span><span class="va">density_raster</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bottlenecks</span><span class="op">$</span><span class="va">high_density_polygons</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="../reference/figures/pkgdown-example-corridors.png" alt="Modeled high-use corridors from the compact packaged example."><div class="figcaption">Modeled high-use corridors from the compact
+packaged example.</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

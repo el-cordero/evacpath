@@ -50,6 +50,21 @@ run_evacpath(
 `walking_speed_mps` converts modeled route distance into time. It should
 be set to the population and planning scenario of interest.
 
+![Scenario sensitivity in modeled evacuation
+time.](../reference/figures/pkgdown-example-scenarios.png)
+
+Scenario sensitivity in modeled evacuation time.
+
+The compact packaged run below shows the distinction: slower walking
+changes time conversion, while a different routing neighbourhood can
+also change modeled distance and route geometry.
+
+| Scenario             | LCP neighbours | Walking speed | Median min. | Maximum min. |
+|:---------------------|---------------:|--------------:|------------:|-------------:|
+| baseline             |             16 |          1.22 |        7.27 |        22.84 |
+| slow_walkers         |             16 |          0.75 |       11.83 |        37.15 |
+| conservative_routing |              8 |          1.22 |        7.48 |        23.96 |
+
 ## Output clipping
 
 `clip_mode = "hazard"` maps the time surface across the full hazard

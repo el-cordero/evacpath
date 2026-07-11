@@ -46,6 +46,25 @@ result <- run_evacpath(
 )
 ```
 
+For context, this is the model result returned by a compact run using
+the packaged inputs. A new region should be interpreted only after its
+own input and QA/QC review.
+
+![Modeled evacuation time to safety for the compact packaged
+example.](../reference/figures/pkgdown-example-time.png)
+
+Modeled evacuation time to safety for the compact packaged example.
+
+| Modeled output                 | Example value |
+|:-------------------------------|--------------:|
+| Minimum modeled time (minutes) |          0.31 |
+| Median modeled time (minutes)  |         10.09 |
+| Mean modeled time (minutes)    |          9.65 |
+| Maximum modeled time (minutes) |         22.84 |
+| Origins                        |         40.00 |
+| Destinations                   |         12.00 |
+| Walking speed (m/s)            |          1.22 |
+
 ## Common customizations
 
 ``` r

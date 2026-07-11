@@ -34,6 +34,43 @@ roads_for_escape     = roads cropped to an inset study extent
 escape_boundary_zone = escape_zone + buffered roads_for_escape
 ```
 
+## Representative packaged output
+
+The detailed code below is off by default so this guide remains
+practical to build and browse. These static results come from the
+compact packaged run and show the kinds of spatial and QA/QC outputs to
+review before a local rerun.
+
+![Example inputs and candidate safety
+exits.](../reference/figures/pkgdown-example-inputs.png)
+
+Example inputs and candidate safety exits.
+
+![Modeled evacuation time to
+safety.](../reference/figures/pkgdown-example-time.png)
+
+Modeled evacuation time to safety.
+
+| Modeled output                 | Example value |
+|:-------------------------------|--------------:|
+| Minimum modeled time (minutes) |          0.31 |
+| Median modeled time (minutes)  |         10.09 |
+| Mean modeled time (minutes)    |          9.65 |
+| Maximum modeled time (minutes) |         22.84 |
+| Origins                        |         40.00 |
+| Destinations                   |         12.00 |
+| Walking speed (m/s)            |          1.22 |
+
+| QA/QC check            | Result      |
+|:-----------------------|:------------|
+| Errors                 | 0           |
+| Warnings               | 1           |
+| Informational checks   | 2           |
+| Road features          | 193         |
+| Sampled origins        | 40          |
+| Candidate safety exits | 12          |
+| DEM resolution (m)     | 5.12 x 5.12 |
+
 To run the full diagnostic workflow locally:
 
 ``` r
@@ -173,10 +210,10 @@ input_files
 #> 1              DEM
 #> 2            roads
 #> 3 inundation depth
-#>                                                                                    file
-#> 1                      /tmp/RtmpHVm9qd/temp_libpath25081022d3a/evacpath/extdata/dem.tif
-#> 2                     /tmp/RtmpHVm9qd/temp_libpath25081022d3a/evacpath/extdata/rds.gpkg
-#> 3 /tmp/RtmpHVm9qd/temp_libpath25081022d3a/evacpath/extdata/tsunami_inundation_depth.tif
+#>                                                                                     file
+#> 1                      /tmp/RtmpVCQpdD/temp_libpath24872e78dceb/evacpath/extdata/dem.tif
+#> 2                     /tmp/RtmpVCQpdD/temp_libpath24872e78dceb/evacpath/extdata/rds.gpkg
+#> 3 /tmp/RtmpVCQpdD/temp_libpath24872e78dceb/evacpath/extdata/tsunami_inundation_depth.tif
 #>   exists
 #> 1   TRUE
 #> 2   TRUE

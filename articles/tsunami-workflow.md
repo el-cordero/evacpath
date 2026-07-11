@@ -68,6 +68,21 @@ result <- run_evacpath(
 )
 ```
 
+![Modeled evacuation time to safety for the compact tsunami
+example.](../reference/figures/pkgdown-example-time.png)
+
+Modeled evacuation time to safety for the compact tsunami example.
+
+| Modeled output                 | Example value |
+|:-------------------------------|--------------:|
+| Minimum modeled time (minutes) |          0.31 |
+| Median modeled time (minutes)  |         10.09 |
+| Mean modeled time (minutes)    |          9.65 |
+| Maximum modeled time (minutes) |         22.84 |
+| Origins                        |         40.00 |
+| Destinations                   |         12.00 |
+| Walking speed (m/s)            |          1.22 |
+
 Inspect the local hazard boundary, road network, elevation sign
 convention, and projected CRS before relying on candidate escape points
 or modeled times.
