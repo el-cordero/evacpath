@@ -1,0 +1,6 @@
+"object","purpose"
+"hazard_zone","Land-only area used for evacuation origins and mapped output."
+"escape_points","Candidate safety exits identified at the selected escape boundary."
+"road_points","Sampled road-based origins used for least-cost calculations."
+"distance_points","Modeled distance to safety for sampled origins and zero-distance exits."
+"evac_polygons / time_grid","Polygonized modeled distance and time surface for map output."

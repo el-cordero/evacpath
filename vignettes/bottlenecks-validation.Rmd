@@ -9,6 +9,15 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+bottleneck_outputs <- data.frame(
+  object = c("density_raster", "high_density_raster", "high_density_polygons", "summary"),
+  purpose = c(
+    "Count of modeled route overlap on the selected raster grid.",
+    "Cells meeting the selected density threshold.",
+    "Optional polygons outlining selected high-density cells.",
+    "Route count, density threshold, and high-density area metrics."
+  )
+)
 ```
 
 Route-density analysis can identify **modeled high-use corridors**. It does not
@@ -42,8 +51,14 @@ bottlenecks$summary
 bottlenecks$high_density_polygons
 ```
 
+![Modeled high-use corridors from the compact packaged example.](../reference/figures/pkgdown-example-corridors.png)
+
+```{r bottleneck-outputs, echo = FALSE, eval = TRUE}
+knitr::kable(bottleneck_outputs, col.names = c("Output", "Purpose"))
+```
+
 The threshold selects high-density raster cells from route overlap. Inspect the
-template resolution, threshold choice, and the underlying route set before
+template resolution, threshold choice, and underlying route set before
 describing a corridor as a planning bottleneck.
 
 ## Compare with reference routes
@@ -54,7 +69,7 @@ or compare each modeled route with the nearest reference route.
 ```{r validation}
 validation <- validate_evac_routes(
   modeled_routes = modeled_routes,
-  reference_routes = official_routes,
+  reference_routes = reference_routes,
   method = "all",
   buffer_m = 25,
   by = "route_id"

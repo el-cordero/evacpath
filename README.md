@@ -13,6 +13,21 @@ The package is designed around a simple idea:
 
 The workflow builds on open-source least-cost path methods for evacuation planning (Cordero et al. 2025) and uses `leastcostpath` for least-cost path and movement-potential modeling (Lewis 2023; Lewis 2021).
 
+![Modeled evacuation time to safety for the compact packaged example.](man/figures/pkgdown-example-time.png)
+
+## What evacpath produces
+
+| Output | Use |
+|---|---|
+| Candidate safety exits | Road intersections with the selected escape boundary. |
+| Least-cost distance to safety | Modeled road-constrained distance from sampled origins. |
+| Modeled evacuation-time surface | Distance converted with a stated walking-speed assumption. |
+| Evacuation polygons | Mapped distance and time output across the selected hazard zone. |
+| Scenario summaries | Sensitivity of modeled metrics to named assumptions. |
+| Route diagnostics and bottlenecks | Input checks and modeled high-use-corridor outputs. |
+
+Start with the [Get started guide](https://el-cordero.github.io/evacpath/articles/get-started.html), browse the [example gallery](https://el-cordero.github.io/evacpath/articles/examples.html), review the [tsunami workflow](https://el-cordero.github.io/evacpath/articles/tsunami-workflow.html), compare [scenarios](https://el-cordero.github.io/evacpath/articles/scenario-comparison.html), or consult the [reference](https://el-cordero.github.io/evacpath/reference/index.html).
+
 ## Installation
 
 Install the released package from CRAN:

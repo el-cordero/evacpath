@@ -9,6 +9,22 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE, purl = FALSE)
+checklist <- data.frame(
+  item = c(
+    "Hazard or inundation input", "Road or pathway input", "DEM or elevation input",
+    "Target CRS", "Walking speed", "Local exclusions", "Output directory", "QA/QC review"
+  ),
+  review = c(
+    "A defined hazard footprint and its intended threshold.",
+    "A connected, suitable pedestrian network with documented attributes.",
+    "Coverage across the study area, elevation sign convention, and resolution.",
+    "A projected CRS in meters for distance calculations.",
+    "A documented assumption appropriate to the planning scenario.",
+    "Piers, private roads, closures, or other locally unsuitable features.",
+    "An explicit directory when using write_evac_outputs().",
+    "CRS, geometry, extent, origins, exits, and reachability checks."
+  )
+)
 ```
 
 For a new region, `evacpath` expects three core spatial inputs:
@@ -20,6 +36,12 @@ For a new region, `evacpath` expects three core spatial inputs:
 The most important requirement is that distance calculations should use a projected coordinate reference system in meters.
 
 The workflow builds on open-source least-cost path methods for evacuation planning (Cordero et al. 2025) and uses `leastcostpath` for least-cost path and movement-potential modeling (Lewis 2023; Lewis 2021).
+
+## Regional checklist
+
+```{r checklist, echo = FALSE, eval = TRUE}
+knitr::kable(checklist, col.names = c("Item", "Review before modeling"))
+```
 
 ```{r setup}
 library(evacpath)

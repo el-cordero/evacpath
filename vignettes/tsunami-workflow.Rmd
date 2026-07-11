@@ -9,6 +9,16 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+zone_roles <- data.frame(
+  object = c("Land-only hazard zone", "Water-combined escape zone", "Road-aware escape boundary"),
+  role = c("Origin and mapped-output area", "Meaningful inland exit context", "Road-preserving exit-detection boundary"),
+  used_for = c("Road origins and final time outputs", "Avoiding coastline exits", "Finding candidate safety exits"),
+  common_mistake_avoided = c(
+    "Mapping through water or starting origins offshore",
+    "Treating the shoreline as an automatic safety boundary",
+    "Dropping bridge, causeway, or walkway connections"
+  )
+)
 ```
 
 Tsunami workflows often need different zones for mapped exposure and for
@@ -17,13 +27,18 @@ explicit.
 
 ## Three spatial roles
 
-- The **land-only hazard zone** is used to generate road origins and clip final
-  time outputs.
-- The **water-combined escape zone** combines inundated land with water so the
-  shoreline is not treated as an artificial safety boundary.
-- The **road-aware escape boundary** adds buffered road corridors before escape
-  points are found, preserving bridge, causeway, and walkway connections that
-  may otherwise disappear from a land-water split.
+```{r zone-roles, echo = FALSE, eval = TRUE}
+knitr::kable(
+  zone_roles,
+  col.names = c("Object", "Role", "Used for", "Common mistake avoided")
+)
+```
+
+![The compact example shows land-only hazard mapping, roads, and candidate safety exits.](../reference/figures/pkgdown-example-inputs.png)
+
+The water-combined escape zone is a processing layer, so it is not shown as a
+separate planning boundary in this compact map. Its role is to prevent a
+land-water split from creating artificial coastline exits.
 
 ## Prepare the zones
 

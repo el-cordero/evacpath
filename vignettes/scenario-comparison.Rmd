@@ -9,6 +9,9 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+scenario_summary <- utils::read.csv(system.file(
+  "extdata/pkgdown-example-scenario-summary.csv", package = "evacpath"
+))
 ```
 
 `compare_evac_scenarios()` runs the same study inputs under named parameter
@@ -36,11 +39,24 @@ comparison <- compare_evac_scenarios(
 comparison$summary
 ```
 
-The summary includes origin and destination counts, time statistics, threshold
-percentages, walking speed, and the selected least-cost settings. A scenario
-with incomplete outputs is retained with missing summary values rather than
-discarding the entire comparison.
+![Scenario sensitivity in modeled evacuation time.](../reference/figures/pkgdown-example-scenarios.png)
+
+The compact packaged example below retains the scenario-level time metrics and
+the assumptions used to generate them.
+
+```{r scenario-summary, echo = FALSE, eval = TRUE}
+knitr::kable(
+  scenario_summary[, c(
+    "scenario", "n_origins", "n_destinations", "walking_speed_mps",
+    "median_evac_time", "mean_evac_time", "max_evac_time", "note"
+  )],
+  digits = 2,
+  col.names = c("Scenario", "Origins", "Exits", "Walking speed",
+                "Median min.", "Mean min.", "Maximum min.", "Assumption")
+)
+```
 
 Treat scenario outputs as sensitivity analysis. A slower walking speed changes
 time conversion; conductance and neighbourhood settings can change modeled route
-geometry as well as distance.
+geometry as well as distance. A scenario with incomplete outputs is retained
+with missing summary values rather than discarding the whole comparison.

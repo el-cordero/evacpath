@@ -1,0 +1,4 @@
+"scenario","n_origins","n_destinations","min_evac_time","median_evac_time","mean_evac_time","max_evac_time","pct_over_10_min","pct_over_15_min","pct_over_20_min","pct_over_30_min","lcp_cost_function","lcp_neighbours","walking_speed_mps","note"
+"baseline",25,8,0.435807903363089,7.2727257468452,9.74895137749458,22.8365471101494,44,28,12,0,"tobler","16",1.22,"Baseline walking-speed and routing assumptions."
+"slow_walkers",25,8,0.708914189470625,11.8303005482015,15.8582942407245,37.1474499658431,60,48,36,16,"tobler","16",0.75,"Changes time conversion; route distance is held by the same routing setup."
+"conservative_routing",25,8,0.448257615927119,7.48437086039748,10.2645837835939,23.9611371135407,44,28,16,0,"tobler","8",1.22,"Uses 8 neighbours and a 30 percent maximum slope."
