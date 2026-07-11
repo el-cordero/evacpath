@@ -1,0 +1,37 @@
+# Scenario comparison
+
+[`compare_evac_scenarios()`](https://el-cordero.github.io/evacpath/reference/compare_evac_scenarios.md)
+runs the same study inputs under named parameter overrides. It returns
+each raw result, a scenario summary, and combined spatial layers when
+available.
+
+``` r
+
+comparison <- compare_evac_scenarios(
+  hazard_zone = hazard_zone,
+  roads = roads,
+  dem = dem,
+  target_crs = "EPSG:32748",
+  max_origins = 100,
+  max_destinations = 25,
+  scenarios = list(
+    baseline = list(walking_speed_mps = 1.22),
+    slow_walkers = list(walking_speed_mps = 0.75),
+    conservative_lcp = list(
+      lcp_neighbours = 8,
+      lcp_max_slope = 30
+    )
+  )
+)
+
+comparison$summary
+```
+
+The summary includes origin and destination counts, time statistics,
+threshold percentages, walking speed, and the selected least-cost
+settings. A scenario with incomplete outputs is retained with missing
+summary values rather than discarding the entire comparison.
+
+Treat scenario outputs as sensitivity analysis. A slower walking speed
+changes time conversion; conductance and neighbourhood settings can
+change modeled route geometry as well as distance.
