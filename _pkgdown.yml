@@ -1,0 +1,152 @@
+url: https://el-cordero.github.io/evacpath/
+destination: pkgdown
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  light-switch: true
+  bslib:
+    primary: "#e15759"
+    base_font: system-ui
+    heading_font: system-ui
+    code_font: ui-monospace
+  includes:
+    in_header: |
+      <style>
+      :root {
+        --evac-orange: #f28e2b;
+        --evac-red: #e15759;
+        --evac-charcoal: #333333;
+        --evac-soft-gray: #f2f2f2;
+      }
+      div.sourceCode pre {
+        min-height: 0 !important;
+        padding-top: 0.9rem !important;
+        padding-bottom: 0.9rem !important;
+      }
+      div.sourceCode pre code span:empty {
+        display: none;
+      }
+      .navbar {
+        border-bottom: 4px solid var(--evac-orange);
+      }
+      .navbar-brand {
+        font-weight: 700;
+      }
+      .template-home .page-header {
+        border-left: 0.4rem solid var(--evac-orange);
+        padding-left: 1rem;
+      }
+      .template-home .description {
+        color: var(--evac-charcoal);
+        font-size: 1.15rem;
+      }
+      [data-bs-theme="dark"] .template-home .description {
+        color: var(--bs-body-color);
+      }
+      </style>
+
+home:
+  title: "evacpath"
+  description: "Road-constrained least-cost pedestrian evacuation modeling in R."
+  sidebar: false
+
+navbar:
+  structure:
+    left: [intro, reference, examples, articles, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Get started
+      href: articles/get-started.html
+    examples:
+      text: Examples
+      menu:
+        - text: Example workflow
+          href: articles/examples.html
+        - text: Tsunami evacuation workflow
+          href: articles/tsunami-workflow.html
+        - text: Diagnostic walkthrough
+          href: articles/diagnostic-example.html
+    articles:
+      text: Articles
+      menu:
+        - text: Modeling assumptions
+          href: articles/modeling-assumptions.html
+        - text: Scenario comparison
+          href: articles/scenario-comparison.html
+        - text: Bottlenecks and validation
+          href: articles/bottlenecks-validation.html
+
+reference:
+  - title: Package overview
+    desc: Package-level help and a concise workflow overview.
+    contents:
+      - evacpath-package
+  - title: Complete workflow
+    desc: Run the full evacuation modeling workflow and write outputs.
+    contents:
+      - run_evacpath
+      - make_output_clip_area
+      - write_evac_outputs
+  - title: Input preparation
+    desc: Read, clean, project, and prepare hazard, road, elevation, and tsunami inputs.
+    contents:
+      - read_spatial
+      - prepare_evac_inputs
+      - prepare_hazard_zone
+      - prepare_tsunami_zones
+      - clean_roads
+      - crop_roads_to_inner_extent
+      - make_region_area
+      - make_roads_in_zone
+      - make_road_aware_escape_zone
+  - title: Evacuation geometry
+    desc: Build origin grids, road masks, escape points, and evacuation polygons.
+    contents:
+      - make_evac_grid
+      - make_road_origins
+      - find_escape_points
+      - make_road_mask
+      - make_evac_polygons
+  - title: Least-cost modeling
+    desc: Build conductance surfaces and calculate least-cost distance and evacuation time.
+    contents:
+      - make_conductance_surface
+      - calc_min_distance_to_safety
+      - calc_evac_time
+      - calculate_lc_path
+      - calculate_min_dist
+      - interpolate_distance_surface
+  - title: Diagnostics, scenarios, and validation
+    desc: Compare assumptions, map bottlenecks, diagnose models, and validate routes.
+    contents:
+      - diagnose_evac_model
+      - has_errors
+      - compare_evac_scenarios
+      - map_evac_bottlenecks
+      - validate_evac_routes
+
+articles:
+  - title: Examples
+    navbar: Examples
+    contents:
+      - examples
+      - tsunami-workflow
+      - custom-region-example
+      - diagnostic-example
+  - title: Guides
+    navbar: Articles
+    contents:
+      - get-started
+      - modeling-assumptions
+      - scenario-comparison
+      - comparing-evacuation-scenarios
+      - bottlenecks-validation
+
+authors:
+  "Elvin Cordero":
+    href: https://github.com/el-cordero
+
+development:
+  mode: release

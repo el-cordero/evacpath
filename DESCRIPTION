@@ -17,7 +17,7 @@ Description: Tools for road-constrained, least-cost pedestrian evacuation modeli
     Lewis (2021) <doi:10.1007/s10816-021-09522-w>, and Joseph Lewis's
     'leastcostpath' package (2023) <https://CRAN.R-project.org/package=leastcostpath>.
 License: MIT + file LICENSE
-URL: https://github.com/el-cordero/evacpath
+URL: https://el-cordero.github.io/evacpath/, https://github.com/el-cordero/evacpath
 BugReports: https://github.com/el-cordero/evacpath/issues
 Language: en-US
 Encoding: UTF-8
@@ -35,6 +35,8 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     devtools,
-    fields
+    fields,
+    pkgdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Config/Needs/website: r-lib/pkgdown

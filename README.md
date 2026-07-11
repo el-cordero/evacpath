@@ -1,8 +1,11 @@
 # evacpath <img src="https://raw.githubusercontent.com/el-cordero/evacpath/main/man/figures/logo.png" align="right" height="140" alt="evacpath logo" />
 
+[![pkgdown](https://github.com/el-cordero/evacpath/actions/workflows/pkgdown.yaml/badge.svg?branch=main)](https://el-cordero.github.io/evacpath/)
+
 `evacpath` is an R package for road-constrained pedestrian evacuation modeling using least-cost path analysis. It takes generic hazard, road/pathway, and elevation inputs, then returns distance-to-safety and evacuation-time outputs for any projected study area.
 
-`evacpath` is available from [CRAN](https://cran.r-project.org/web/packages/evacpath/index.html) with a permanent [CRAN package DOI](https://doi.org/10.32614/CRAN.package.evacpath).
+`evacpath` is available from [CRAN](https://CRAN.R-project.org/package=evacpath) with a permanent [CRAN package DOI](https://doi.org/10.32614/CRAN.package.evacpath).
+Package documentation and guides are available at the [evacpath website](https://el-cordero.github.io/evacpath/).
 
 The package is designed around a simple idea:
 

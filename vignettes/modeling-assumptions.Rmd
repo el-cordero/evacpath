@@ -1,0 +1,63 @@
+---
+title: "Modeling assumptions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Modeling assumptions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+Evacuation maps are conditional on the spatial inputs and modeling choices that
+produce them. Record those choices and inspect their effects before using a map
+for planning.
+
+## Coordinate reference system
+
+Use a projected CRS in meters. Buffers, grid resolution, route distance, and
+walking-speed conversion are not meaningful in longitude and latitude degrees.
+
+## Hazard, terrain, and road inputs
+
+- Define the hazard zone for the question being asked; for tsunami modeling,
+  distinguish the land-only origin zone from the escape boundary.
+- Confirm the digital elevation model sign convention before using land and
+  water thresholds. Do not assume every source uses positive values for land.
+- Review road attributes and remove unsuitable features such as piers or routes
+  that are not usable by pedestrians.
+
+## Buffers and origin density
+
+`road_buffer_m` controls how far movement can extend from the road centerline.
+`escape_buffer_m` provides local access around candidate escape points.
+`grid_resolution` controls the sampling density of origins; finer grids increase
+runtime and should be justified by the terrain and road data resolution.
+
+## Conductance and least-cost paths
+
+`make_conductance_surface()` uses a slope-based conductance surface from
+`leastcostpath`. The following arguments affect route geometry rather than just
+the final time conversion:
+
+```{r lcp}
+run_evacpath(
+  ...,
+  lcp_cost_function = "tobler",
+  lcp_neighbours = 16,
+  lcp_crit_slope = 12,
+  lcp_max_slope = NULL
+)
+```
+
+`walking_speed_mps` converts modeled route distance into time. It should be set
+to the population and planning scenario of interest.
+
+## Output clipping
+
+`clip_mode = "hazard"` maps the time surface across the full hazard zone.
+`"road_hazard"` limits output to the road-buffer area, `"hazard_plus_roads"`
+retains both, and `"none"` leaves the Voronoi output unclipped. Choose the mode
+that matches the intended map interpretation.

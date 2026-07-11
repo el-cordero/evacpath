@@ -11,6 +11,9 @@
 *.Rcheck/
 Meta/
 doc/
+pkgdown/*
+!pkgdown/favicon/
+!pkgdown/favicon/*
 
 # Vignette/cache outputs
 vignettes/*.html

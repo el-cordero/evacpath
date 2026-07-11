@@ -1,11 +1,14 @@
 ^README\.Rmd$
 ^\.github$
+^paper$
+^inst/legacy$
 ^data-raw$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^jakarta-example-diagnostics\.Rmd$
 ^jakarta-example-diagnostics\.html$
 ^doc$
+^pkgdown$
 ^Meta$
 ^_outputs$
 ^vignettes/_outputs$
@@ -14,5 +17,6 @@
 ^vignettes/.*\.aux$
 ^vignettes/.*\.toc$
 ^vignettes/.*_files$
+^vignettes/\.DS_Store$
 ^cran-comments\.md$
 ^Rplots\.pdf$
