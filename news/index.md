@@ -28,6 +28,8 @@
   [`validate_evac_routes()`](https://el-cordero.github.io/evacpath/reference/validate_evac_routes.md)
   for buffer-overlap, Hausdorff-distance, and optional
   path-deviation-index comparisons against reference routes.
+- Refreshed the pkgdown site with neutral styling, compact static
+  example maps, and output summaries generated from packaged data.
 
 ## evacpath 0.1.1
 

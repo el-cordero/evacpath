@@ -14,6 +14,19 @@ evacuation planning (Cordero et al. 2025) and uses `leastcostpath` for
 least-cost path and movement-potential modeling (Lewis 2023; Lewis
 2021).
 
+## Regional checklist
+
+| Item | Review before modeling |
+|:---|:---|
+| Hazard or inundation input | A defined hazard footprint and its intended threshold. |
+| Road or pathway input | A connected, suitable pedestrian network with documented attributes. |
+| DEM or elevation input | Coverage across the study area, elevation sign convention, and resolution. |
+| Target CRS | A projected CRS in meters for distance calculations. |
+| Walking speed | A documented assumption appropriate to the planning scenario. |
+| Local exclusions | Piers, private roads, closures, or other locally unsuitable features. |
+| Output directory | An explicit directory when using write_evac_outputs(). |
+| QA/QC review | CRS, geometry, extent, origins, exits, and reachability checks. |
+
 ``` r
 
 library(evacpath)

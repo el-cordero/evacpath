@@ -33,9 +33,21 @@ bottlenecks$summary
 bottlenecks$high_density_polygons
 ```
 
+![Modeled high-use corridors from the compact packaged
+example.](../reference/figures/pkgdown-example-corridors.png)
+
+Modeled high-use corridors from the compact packaged example.
+
+| Output | Purpose |
+|:---|:---|
+| density_raster | Count of modeled route overlap on the selected raster grid. |
+| high_density_raster | Cells meeting the selected density threshold. |
+| high_density_polygons | Optional polygons outlining selected high-density cells. |
+| summary | Route count, density threshold, and high-density area metrics. |
+
 The threshold selects high-density raster cells from route overlap.
-Inspect the template resolution, threshold choice, and the underlying
-route set before describing a corridor as a planning bottleneck.
+Inspect the template resolution, threshold choice, and underlying route
+set before describing a corridor as a planning bottleneck.
 
 ## Compare with reference routes
 
@@ -47,7 +59,7 @@ modeled route with the nearest reference route.
 
 validation <- validate_evac_routes(
   modeled_routes = modeled_routes,
-  reference_routes = official_routes,
+  reference_routes = reference_routes,
   method = "all",
   buffer_m = 25,
   by = "route_id"

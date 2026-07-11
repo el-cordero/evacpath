@@ -7,13 +7,22 @@ makes those roles explicit.
 
 ## Three spatial roles
 
-- The **land-only hazard zone** is used to generate road origins and
-  clip final time outputs.
-- The **water-combined escape zone** combines inundated land with water
-  so the shoreline is not treated as an artificial safety boundary.
-- The **road-aware escape boundary** adds buffered road corridors before
-  escape points are found, preserving bridge, causeway, and walkway
-  connections that may otherwise disappear from a land-water split.
+| Object | Role | Used for | Common mistake avoided |
+|:---|:---|:---|:---|
+| Land-only hazard zone | Origin and mapped-output area | Road origins and final time outputs | Mapping through water or starting origins offshore |
+| Water-combined escape zone | Meaningful inland exit context | Avoiding coastline exits | Treating the shoreline as an automatic safety boundary |
+| Road-aware escape boundary | Road-preserving exit-detection boundary | Finding candidate safety exits | Dropping bridge, causeway, or walkway connections |
+
+![The compact example shows land-only hazard mapping, roads, and
+candidate safety
+exits.](../reference/figures/pkgdown-example-inputs.png)
+
+The compact example shows land-only hazard mapping, roads, and candidate
+safety exits.
+
+The water-combined escape zone is a processing layer, so it is not shown
+as a separate planning boundary in this compact map. Its role is to
+prevent a land-water split from creating artificial coastline exits.
 
 ## Prepare the zones
 

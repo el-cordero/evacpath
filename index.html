@@ -21,35 +21,82 @@
 <meta property="og:image" content="https://el-cordero.github.io/evacpath/logo.png">
 <style>
 :root {
-  --evac-orange: #f28e2b;
-  --evac-red: #e15759;
-  --evac-charcoal: #333333;
-  --evac-soft-gray: #f2f2f2;
+  --evac-primary: #465a5a;
+  --evac-primary-dark: #2f3d3d;
+  --evac-accent: #b66a2e;
+  --evac-safety: #a94b4d;
+  --evac-charcoal: #2f3433;
+  --evac-muted: #66706e;
+  --evac-bg: #faf9f6;
+  --evac-soft: #f1f3f2;
+  --evac-border: #d8dedb;
+}
+body {
+  color: var(--evac-charcoal);
+  background: var(--evac-bg);
 }
 div.sourceCode pre {
   min-height: 0 !important;
   padding-top: 0.9rem !important;
   padding-bottom: 0.9rem !important;
+  background: var(--evac-soft);
+  border: 1px solid var(--evac-border);
+  border-radius: 8px;
 }
 div.sourceCode pre code span:empty {
   display: none;
 }
 .navbar {
-  border-bottom: 4px solid var(--evac-orange);
+  border-bottom: 1px solid var(--evac-border);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.035);
 }
 .navbar-brand {
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 .template-home .page-header {
-  border-left: 0.4rem solid var(--evac-orange);
-  padding-left: 1rem;
+  border-left: none;
+  padding-left: 0;
 }
 .template-home .description {
-  color: var(--evac-charcoal);
-  font-size: 1.15rem;
+  color: var(--evac-muted);
+  font-size: 1.12rem;
 }
 [data-bs-theme="dark"] .template-home .description {
   color: var(--bs-body-color);
+}
+img {
+  max-width: 100%;
+}
+.template-article main img,
+.template-home main img {
+  border: 1px solid var(--evac-border);
+  border-radius: 10px;
+  background: white;
+  padding: 0.35rem;
+}
+.figure, .float {
+  margin-top: 1.4rem;
+  margin-bottom: 1.8rem;
+}
+.figcaption, .caption {
+  color: var(--evac-muted);
+  font-size: 0.92rem;
+  margin-top: 0.45rem;
+}
+.table {
+  font-size: 0.95rem;
+}
+.table thead th {
+  background: var(--evac-soft);
+  border-bottom: 1px solid var(--evac-border);
+}
+.table > :not(caption) > * > * {
+  border-bottom-color: var(--evac-border);
+}
+a {
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
 }
 </style>
 </head>
@@ -115,6 +162,51 @@ div.sourceCode pre code span:empty {
 <p>hazard zone + roads/pathways + DEM + projected CRS -&gt; distance-to-safety and evacuation-time outputs</p>
 </blockquote>
 <p>The workflow builds on open-source least-cost path methods for evacuation planning (Cordero et al. 2025) and uses <code>leastcostpath</code> for least-cost path and movement-potential modeling (Lewis 2023; Lewis 2021).</p>
+<div class="float">
+<img src="reference/figures/pkgdown-example-time.png" alt="Modeled evacuation time to safety for the compact packaged example."><div class="figcaption">Modeled evacuation time to safety for the compact packaged example.</div>
+</div>
+<p>Modeled evacuation time to safety for the compact packaged example.</p>
+<div class="section level2">
+<h2 id="what-evacpath-produces">What evacpath produces<a class="anchor" aria-label="anchor" href="#what-evacpath-produces"></a>
+</h2>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr>
+<th>Output</th>
+<th>Use</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Candidate safety exits</td>
+<td>Road intersections with the selected escape boundary.</td>
+</tr>
+<tr>
+<td>Least-cost distance to safety</td>
+<td>Modeled road-constrained distance from sampled origins.</td>
+</tr>
+<tr>
+<td>Modeled evacuation-time surface</td>
+<td>Distance converted with a stated walking-speed assumption.</td>
+</tr>
+<tr>
+<td>Evacuation polygons</td>
+<td>Mapped distance and time output across the selected hazard zone.</td>
+</tr>
+<tr>
+<td>Scenario summaries</td>
+<td>Sensitivity of modeled metrics to named assumptions.</td>
+</tr>
+<tr>
+<td>Route diagnostics and bottlenecks</td>
+<td>Input checks and modeled high-use-corridor outputs.</td>
+</tr>
+</tbody>
+</table>
+<p>Start with the <a href="https://el-cordero.github.io/evacpath/articles/get-started.html">Get started guide</a>, browse the <a href="https://el-cordero.github.io/evacpath/articles/examples.html">example gallery</a>, review the <a href="https://el-cordero.github.io/evacpath/articles/tsunami-workflow.html">tsunami workflow</a>, compare <a href="https://el-cordero.github.io/evacpath/articles/scenario-comparison.html">scenarios</a>, or consult the <a href="https://el-cordero.github.io/evacpath/reference/index.html">reference</a>.</p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>

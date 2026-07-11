@@ -18,35 +18,82 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Scenario comparison">
 <style>
 :root {
-  --evac-orange: #f28e2b;
-  --evac-red: #e15759;
-  --evac-charcoal: #333333;
-  --evac-soft-gray: #f2f2f2;
+  --evac-primary: #465a5a;
+  --evac-primary-dark: #2f3d3d;
+  --evac-accent: #b66a2e;
+  --evac-safety: #a94b4d;
+  --evac-charcoal: #2f3433;
+  --evac-muted: #66706e;
+  --evac-bg: #faf9f6;
+  --evac-soft: #f1f3f2;
+  --evac-border: #d8dedb;
+}
+body {
+  color: var(--evac-charcoal);
+  background: var(--evac-bg);
 }
 div.sourceCode pre {
   min-height: 0 !important;
   padding-top: 0.9rem !important;
   padding-bottom: 0.9rem !important;
+  background: var(--evac-soft);
+  border: 1px solid var(--evac-border);
+  border-radius: 8px;
 }
 div.sourceCode pre code span:empty {
   display: none;
 }
 .navbar {
-  border-bottom: 4px solid var(--evac-orange);
+  border-bottom: 1px solid var(--evac-border);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.035);
 }
 .navbar-brand {
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 .template-home .page-header {
-  border-left: 0.4rem solid var(--evac-orange);
-  padding-left: 1rem;
+  border-left: none;
+  padding-left: 0;
 }
 .template-home .description {
-  color: var(--evac-charcoal);
-  font-size: 1.15rem;
+  color: var(--evac-muted);
+  font-size: 1.12rem;
 }
 [data-bs-theme="dark"] .template-home .description {
   color: var(--bs-body-color);
+}
+img {
+  max-width: 100%;
+}
+.template-article main img,
+.template-home main img {
+  border: 1px solid var(--evac-border);
+  border-radius: 10px;
+  background: white;
+  padding: 0.35rem;
+}
+.figure, .float {
+  margin-top: 1.4rem;
+  margin-bottom: 1.8rem;
+}
+.figcaption, .caption {
+  color: var(--evac-muted);
+  font-size: 0.92rem;
+  margin-top: 0.45rem;
+}
+.table {
+  font-size: 0.95rem;
+}
+.table thead th {
+  background: var(--evac-soft);
+  border-bottom: 1px solid var(--evac-border);
+}
+.table > :not(caption) > * > * {
+  border-bottom-color: var(--evac-border);
+}
+a {
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
 }
 </style>
 </head>
@@ -135,13 +182,72 @@ summary, and combined spatial layers when available.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">comparison</span><span class="op">$</span><span class="va">summary</span></span></code></pre></div>
-<p>The summary includes origin and destination counts, time statistics,
-threshold percentages, walking speed, and the selected least-cost
-settings. A scenario with incomplete outputs is retained with missing
-summary values rather than discarding the entire comparison.</p>
+<div class="float">
+<img src="../reference/figures/pkgdown-example-scenarios.png" alt="Scenario sensitivity in modeled evacuation time."><div class="figcaption">Scenario sensitivity in modeled evacuation
+time.</div>
+</div>
+<p>The compact packaged example below retains the scenario-level time
+metrics and the assumptions used to generate them.</p>
+<table class="table">
+<colgroup>
+<col width="13%">
+<col width="5%">
+<col width="3%">
+<col width="8%">
+<col width="7%">
+<col width="6%">
+<col width="8%">
+<col width="47%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Scenario</th>
+<th align="right">Origins</th>
+<th align="right">Exits</th>
+<th align="right">Walking speed</th>
+<th align="right">Median min.</th>
+<th align="right">Mean min.</th>
+<th align="right">Maximum min.</th>
+<th align="left">Assumption</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">baseline</td>
+<td align="right">25</td>
+<td align="right">8</td>
+<td align="right">1.22</td>
+<td align="right">7.27</td>
+<td align="right">9.75</td>
+<td align="right">22.84</td>
+<td align="left">Baseline walking-speed and routing assumptions.</td>
+</tr>
+<tr class="even">
+<td align="left">slow_walkers</td>
+<td align="right">25</td>
+<td align="right">8</td>
+<td align="right">0.75</td>
+<td align="right">11.83</td>
+<td align="right">15.86</td>
+<td align="right">37.15</td>
+<td align="left">Changes time conversion; route distance is held by the
+same routing setup.</td>
+</tr>
+<tr class="odd">
+<td align="left">conservative_routing</td>
+<td align="right">25</td>
+<td align="right">8</td>
+<td align="right">1.22</td>
+<td align="right">7.48</td>
+<td align="right">10.26</td>
+<td align="right">23.96</td>
+<td align="left">Uses 8 neighbours and a 30 percent maximum slope.</td>
+</tr>
+</tbody>
+</table>
 <p>Treat scenario outputs as sensitivity analysis. A slower walking
 speed changes time conversion; conductance and neighbourhood settings
-can change modeled route geometry as well as distance.</p>
+can change modeled route geometry as well as distance. A scenario with
+incomplete outputs is retained with missing summary values rather than
+discarding the whole comparison.</p>
   </main>
 </div>
 

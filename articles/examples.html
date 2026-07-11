@@ -18,35 +18,82 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Example workflow">
 <style>
 :root {
-  --evac-orange: #f28e2b;
-  --evac-red: #e15759;
-  --evac-charcoal: #333333;
-  --evac-soft-gray: #f2f2f2;
+  --evac-primary: #465a5a;
+  --evac-primary-dark: #2f3d3d;
+  --evac-accent: #b66a2e;
+  --evac-safety: #a94b4d;
+  --evac-charcoal: #2f3433;
+  --evac-muted: #66706e;
+  --evac-bg: #faf9f6;
+  --evac-soft: #f1f3f2;
+  --evac-border: #d8dedb;
+}
+body {
+  color: var(--evac-charcoal);
+  background: var(--evac-bg);
 }
 div.sourceCode pre {
   min-height: 0 !important;
   padding-top: 0.9rem !important;
   padding-bottom: 0.9rem !important;
+  background: var(--evac-soft);
+  border: 1px solid var(--evac-border);
+  border-radius: 8px;
 }
 div.sourceCode pre code span:empty {
   display: none;
 }
 .navbar {
-  border-bottom: 4px solid var(--evac-orange);
+  border-bottom: 1px solid var(--evac-border);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.035);
 }
 .navbar-brand {
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 .template-home .page-header {
-  border-left: 0.4rem solid var(--evac-orange);
-  padding-left: 1rem;
+  border-left: none;
+  padding-left: 0;
 }
 .template-home .description {
-  color: var(--evac-charcoal);
-  font-size: 1.15rem;
+  color: var(--evac-muted);
+  font-size: 1.12rem;
 }
 [data-bs-theme="dark"] .template-home .description {
   color: var(--bs-body-color);
+}
+img {
+  max-width: 100%;
+}
+.template-article main img,
+.template-home main img {
+  border: 1px solid var(--evac-border);
+  border-radius: 10px;
+  background: white;
+  padding: 0.35rem;
+}
+.figure, .float {
+  margin-top: 1.4rem;
+  margin-bottom: 1.8rem;
+}
+.figcaption, .caption {
+  color: var(--evac-muted);
+  font-size: 0.92rem;
+  margin-top: 0.45rem;
+}
+.table {
+  font-size: 0.95rem;
+}
+.table thead th {
+  background: var(--evac-soft);
+  border-bottom: 1px solid var(--evac-border);
+}
+.table > :not(caption) > * > * {
+  border-bottom-color: var(--evac-border);
+}
+a {
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
 }
 </style>
 </head>
@@ -114,44 +161,207 @@ div.sourceCode pre code span:empty {
     
     
 <p>This gallery uses the packaged example data in a focused projected
-window. It illustrates the package workflow and the types of layers to
-inspect; it is not a finished evacuation plan or a substitute for local
+window. It illustrates the package workflow and the layers to inspect;
+it is not a finished evacuation plan or a substitute for local
 review.</p>
 <div class="section level2">
-<h2 id="inputs-and-candidate-exits">Inputs and candidate exits<a class="anchor" aria-label="anchor" href="#inputs-and-candidate-exits"></a>
+<h2 id="example-inputs">Example inputs<a class="anchor" aria-label="anchor" href="#example-inputs"></a>
 </h2>
 <div class="float">
-<img src="../reference/figures/readme-example-inputs.png" alt="Example hazard zone, roads, and escape points"><div class="figcaption">Example hazard zone, roads, and escape
-points</div>
+<img src="../reference/figures/pkgdown-example-inputs.png" alt="Example inputs and candidate safety exits."><div class="figcaption">Example inputs and candidate safety exits.</div>
 </div>
-<p>The orange polygon is the land-only hazard zone used for origins and
-mapped outputs. Roads are the candidate pedestrian network. Red points
-are candidate escape locations found where roads cross the selected
-escape boundary.</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Input</th>
+<th align="left">Example value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Coordinate reference system</td>
+<td align="left">EPSG:32748</td>
+</tr>
+<tr class="even">
+<td align="left">Hazard-zone area (square km)</td>
+<td align="left">4.048</td>
+</tr>
+<tr class="odd">
+<td align="left">Road features</td>
+<td align="left">254</td>
+</tr>
+<tr class="even">
+<td align="left">Candidate safety exits</td>
+<td align="left">12</td>
+</tr>
+<tr class="odd">
+<td align="left">Sampled road origins</td>
+<td align="left">40</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
-<h2 id="modeled-time-surface">Modeled time surface<a class="anchor" aria-label="anchor" href="#modeled-time-surface"></a>
+<h2 id="candidate-safety-exits">Candidate safety exits<a class="anchor" aria-label="anchor" href="#candidate-safety-exits"></a>
+</h2>
+<p>The <strong>hazard zone</strong> is the land-only area used for
+evacuation origins and mapped outputs. The <strong>escape zone</strong>
+combines the inundated area with water so the shoreline is not treated
+as an artificial exit. Candidate safety exits are road intersections
+with the selected escape boundary, not confirmed safe locations.</p>
+</div>
+<div class="section level2">
+<h2 id="modeled-evacuation-time">Modeled evacuation time<a class="anchor" aria-label="anchor" href="#modeled-evacuation-time"></a>
 </h2>
 <div class="float">
-<img src="../reference/figures/readme-example-time.png" alt="Example modeled evacuation time"><div class="figcaption">Example modeled evacuation time</div>
+<img src="../reference/figures/pkgdown-example-time.png" alt="Modeled evacuation time to safety."><div class="figcaption">Modeled evacuation time to safety.</div>
 </div>
-<p>The time surface converts the modeled least-cost distance to safety
-using the selected walking speed. It is sensitive to the elevation
-surface, road mask, escape-point detection, cost function, and routing
-neighbourhood.</p>
+<p>The time surface converts modeled least-cost distance to safety with
+the chosen walking speed. It is sensitive to the elevation surface, road
+mask, escape-point logic, cost function, and routing neighbourhood.</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Modeled output</th>
+<th align="right">Example value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Minimum modeled time (minutes)</td>
+<td align="right">0.31</td>
+</tr>
+<tr class="even">
+<td align="left">Median modeled time (minutes)</td>
+<td align="right">10.09</td>
+</tr>
+<tr class="odd">
+<td align="left">Mean modeled time (minutes)</td>
+<td align="right">9.65</td>
+</tr>
+<tr class="even">
+<td align="left">Maximum modeled time (minutes)</td>
+<td align="right">22.84</td>
+</tr>
+<tr class="odd">
+<td align="left">Origins</td>
+<td align="right">40.00</td>
+</tr>
+<tr class="even">
+<td align="left">Destinations</td>
+<td align="right">12.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Walking speed (m/s)</td>
+<td align="right">1.22</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
-<h2 id="reproduce-the-example">Reproduce the example<a class="anchor" aria-label="anchor" href="#reproduce-the-example"></a>
+<h2 id="scenario-comparison">Scenario comparison<a class="anchor" aria-label="anchor" href="#scenario-comparison"></a>
 </h2>
-<p>The figure script is packaged at
-<code>inst/scripts/make-readme-figures.R</code>. It crops the elevation,
-hazard, and road layers before preparing tsunami zones or running the
-model, then limits the display example to 500 origins and 100 escape
-points.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"scripts/make-readme-figures.R"</span>, package <span class="op">=</span> <span class="st">"evacpath"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>For a function-by-function inspection, see the diagnostic walkthrough
-in the Examples menu.</p>
+<div class="float">
+<img src="../reference/figures/pkgdown-example-scenarios.png" alt="Scenario sensitivity in modeled evacuation time."><div class="figcaption">Scenario sensitivity in modeled evacuation
+time.</div>
+</div>
+<p>The slower-walker scenario changes the time conversion. The
+conservative-routing scenario changes least-cost path settings and may
+therefore change both modeled route geometry and distance.</p>
+<table class="table">
+<colgroup>
+<col width="14%">
+<col width="9%">
+<col width="8%">
+<col width="6%">
+<col width="8%">
+<col width="51%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Scenario</th>
+<th align="right">Walking speed</th>
+<th align="right">Median min.</th>
+<th align="right">Mean min.</th>
+<th align="right">Maximum min.</th>
+<th align="left">Assumption</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">baseline</td>
+<td align="right">1.22</td>
+<td align="right">7.27</td>
+<td align="right">9.75</td>
+<td align="right">22.84</td>
+<td align="left">Baseline walking-speed and routing assumptions.</td>
+</tr>
+<tr class="even">
+<td align="left">slow_walkers</td>
+<td align="right">0.75</td>
+<td align="right">11.83</td>
+<td align="right">15.86</td>
+<td align="right">37.15</td>
+<td align="left">Changes time conversion; route distance is held by the
+same routing setup.</td>
+</tr>
+<tr class="odd">
+<td align="left">conservative_routing</td>
+<td align="right">1.22</td>
+<td align="right">7.48</td>
+<td align="right">10.26</td>
+<td align="right">23.96</td>
+<td align="left">Uses 8 neighbours and a 30 percent maximum slope.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="outputs-users-can-write">Outputs users can write<a class="anchor" aria-label="anchor" href="#outputs-users-can-write"></a>
+</h2>
+<p><code><a href="../reference/write_evac_outputs.html">write_evac_outputs()</a></code> writes selected spatial outputs to
+an explicit directory. For <code>prefix = "study_area"</code>, typical
+filenames include <code>study_area_escape_points.gpkg</code>,
+<code>study_area_distance_points.gpkg</code>,
+<code>study_area_evac_polygons.gpkg</code>, and
+<code>study_area_time_grid.gpkg</code>. The returned object keeps the
+following layers available for inspection before anything is
+written.</p>
+<table class="table">
+<colgroup>
+<col width="26%">
+<col width="73%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Object</th>
+<th align="left">Purpose</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">hazard_zone</td>
+<td align="left">Land-only area used for evacuation origins and mapped
+output.</td>
+</tr>
+<tr class="even">
+<td align="left">escape_points</td>
+<td align="left">Candidate safety exits identified at the selected
+escape boundary.</td>
+</tr>
+<tr class="odd">
+<td align="left">road_points</td>
+<td align="left">Sampled road-based origins used for least-cost
+calculations.</td>
+</tr>
+<tr class="even">
+<td align="left">distance_points</td>
+<td align="left">Modeled distance to safety for sampled origins and
+zero-distance exits.</td>
+</tr>
+<tr class="odd">
+<td align="left">evac_polygons / time_grid</td>
+<td align="left">Polygonized modeled distance and time surface for map
+output.</td>
+</tr>
+</tbody>
+</table>
+<p>The reproducible generator for this gallery is
+<code>inst/scripts/make-pkgdown-example-outputs.R</code>. It uses the
+packaged data and creates the small figures and CSV summaries included
+here.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

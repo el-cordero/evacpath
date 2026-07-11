@@ -18,35 +18,82 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Bottlenecks and route validation">
 <style>
 :root {
-  --evac-orange: #f28e2b;
-  --evac-red: #e15759;
-  --evac-charcoal: #333333;
-  --evac-soft-gray: #f2f2f2;
+  --evac-primary: #465a5a;
+  --evac-primary-dark: #2f3d3d;
+  --evac-accent: #b66a2e;
+  --evac-safety: #a94b4d;
+  --evac-charcoal: #2f3433;
+  --evac-muted: #66706e;
+  --evac-bg: #faf9f6;
+  --evac-soft: #f1f3f2;
+  --evac-border: #d8dedb;
+}
+body {
+  color: var(--evac-charcoal);
+  background: var(--evac-bg);
 }
 div.sourceCode pre {
   min-height: 0 !important;
   padding-top: 0.9rem !important;
   padding-bottom: 0.9rem !important;
+  background: var(--evac-soft);
+  border: 1px solid var(--evac-border);
+  border-radius: 8px;
 }
 div.sourceCode pre code span:empty {
   display: none;
 }
 .navbar {
-  border-bottom: 4px solid var(--evac-orange);
+  border-bottom: 1px solid var(--evac-border);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.035);
 }
 .navbar-brand {
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 .template-home .page-header {
-  border-left: 0.4rem solid var(--evac-orange);
-  padding-left: 1rem;
+  border-left: none;
+  padding-left: 0;
 }
 .template-home .description {
-  color: var(--evac-charcoal);
-  font-size: 1.15rem;
+  color: var(--evac-muted);
+  font-size: 1.12rem;
 }
 [data-bs-theme="dark"] .template-home .description {
   color: var(--bs-body-color);
+}
+img {
+  max-width: 100%;
+}
+.template-article main img,
+.template-home main img {
+  border: 1px solid var(--evac-border);
+  border-radius: 10px;
+  background: white;
+  padding: 0.35rem;
+}
+.figure, .float {
+  margin-top: 1.4rem;
+  margin-bottom: 1.8rem;
+}
+.figcaption, .caption {
+  color: var(--evac-muted);
+  font-size: 0.92rem;
+  margin-top: 0.45rem;
+}
+.table {
+  font-size: 0.95rem;
+}
+.table thead th {
+  background: var(--evac-soft);
+  border-bottom: 1px solid var(--evac-border);
+}
+.table > :not(caption) > * > * {
+  border-bottom-color: var(--evac-border);
+}
+a {
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
 }
 </style>
 </head>
@@ -142,9 +189,44 @@ Request them when the result will be used for corridor analysis.</p>
 <span></span>
 <span><span class="va">bottlenecks</span><span class="op">$</span><span class="va">summary</span></span>
 <span><span class="va">bottlenecks</span><span class="op">$</span><span class="va">high_density_polygons</span></span></code></pre></div>
+<div class="float">
+<img src="../reference/figures/pkgdown-example-corridors.png" alt="Modeled high-use corridors from the compact packaged example."><div class="figcaption">Modeled high-use corridors from the compact
+packaged example.</div>
+</div>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="74%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Output</th>
+<th align="left">Purpose</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">density_raster</td>
+<td align="left">Count of modeled route overlap on the selected raster
+grid.</td>
+</tr>
+<tr class="even">
+<td align="left">high_density_raster</td>
+<td align="left">Cells meeting the selected density threshold.</td>
+</tr>
+<tr class="odd">
+<td align="left">high_density_polygons</td>
+<td align="left">Optional polygons outlining selected high-density
+cells.</td>
+</tr>
+<tr class="even">
+<td align="left">summary</td>
+<td align="left">Route count, density threshold, and high-density area
+metrics.</td>
+</tr>
+</tbody>
+</table>
 <p>The threshold selects high-density raster cells from route overlap.
-Inspect the template resolution, threshold choice, and the underlying
-route set before describing a corridor as a planning bottleneck.</p>
+Inspect the template resolution, threshold choice, and underlying route
+set before describing a corridor as a planning bottleneck.</p>
 </div>
 <div class="section level2">
 <h2 id="compare-with-reference-routes">Compare with reference routes<a class="anchor" aria-label="anchor" href="#compare-with-reference-routes"></a>
@@ -155,7 +237,7 @@ the nearest reference route.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">validation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/validate_evac_routes.html">validate_evac_routes</a></span><span class="op">(</span></span>
 <span>  modeled_routes <span class="op">=</span> <span class="va">modeled_routes</span>,</span>
-<span>  reference_routes <span class="op">=</span> <span class="va">official_routes</span>,</span>
+<span>  reference_routes <span class="op">=</span> <span class="va">reference_routes</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  buffer_m <span class="op">=</span> <span class="fl">25</span>,</span>
 <span>  by <span class="op">=</span> <span class="st">"route_id"</span></span>

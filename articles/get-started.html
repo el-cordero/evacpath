@@ -18,35 +18,82 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Get started with evacpath">
 <style>
 :root {
-  --evac-orange: #f28e2b;
-  --evac-red: #e15759;
-  --evac-charcoal: #333333;
-  --evac-soft-gray: #f2f2f2;
+  --evac-primary: #465a5a;
+  --evac-primary-dark: #2f3d3d;
+  --evac-accent: #b66a2e;
+  --evac-safety: #a94b4d;
+  --evac-charcoal: #2f3433;
+  --evac-muted: #66706e;
+  --evac-bg: #faf9f6;
+  --evac-soft: #f1f3f2;
+  --evac-border: #d8dedb;
+}
+body {
+  color: var(--evac-charcoal);
+  background: var(--evac-bg);
 }
 div.sourceCode pre {
   min-height: 0 !important;
   padding-top: 0.9rem !important;
   padding-bottom: 0.9rem !important;
+  background: var(--evac-soft);
+  border: 1px solid var(--evac-border);
+  border-radius: 8px;
 }
 div.sourceCode pre code span:empty {
   display: none;
 }
 .navbar {
-  border-bottom: 4px solid var(--evac-orange);
+  border-bottom: 1px solid var(--evac-border);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.035);
 }
 .navbar-brand {
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 .template-home .page-header {
-  border-left: 0.4rem solid var(--evac-orange);
-  padding-left: 1rem;
+  border-left: none;
+  padding-left: 0;
 }
 .template-home .description {
-  color: var(--evac-charcoal);
-  font-size: 1.15rem;
+  color: var(--evac-muted);
+  font-size: 1.12rem;
 }
 [data-bs-theme="dark"] .template-home .description {
   color: var(--bs-body-color);
+}
+img {
+  max-width: 100%;
+}
+.template-article main img,
+.template-home main img {
+  border: 1px solid var(--evac-border);
+  border-radius: 10px;
+  background: white;
+  padding: 0.35rem;
+}
+.figure, .float {
+  margin-top: 1.4rem;
+  margin-bottom: 1.8rem;
+}
+.figcaption, .caption {
+  color: var(--evac-muted);
+  font-size: 0.92rem;
+  margin-top: 0.45rem;
+}
+.table {
+  font-size: 0.95rem;
+}
+.table thead th {
+  background: var(--evac-soft);
+  border-bottom: 1px solid var(--evac-border);
+}
+.table > :not(caption) > * > * {
+  border-bottom-color: var(--evac-border);
+}
+a {
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
 }
 </style>
 </head>
@@ -114,10 +161,10 @@ div.sourceCode pre code span:empty {
     
     
 <p><code>evacpath</code> estimates road-constrained pedestrian distance
-to safety and converts that distance into an evacuation-time surface. A
-practical workflow needs a hazard zone, a road or pathway network, an
-elevation raster, and a projected coordinate reference system (CRS) in
-meters.</p>
+to safety and converts that modeled distance into an evacuation-time
+surface. A practical workflow needs a hazard zone, a road or pathway
+network, an elevation raster, and a projected coordinate reference
+system (CRS) in meters.</p>
 <div class="section level2">
 <h2 id="install-and-load">Install and load<a class="anchor" aria-label="anchor" href="#install-and-load"></a>
 </h2>
@@ -145,6 +192,37 @@ evacuation-planning data.</p>
 <span>  dem <span class="op">=</span> <span class="va">dem</span>,</span>
 <span>  target_crs <span class="op">=</span> <span class="st">"EPSG:32748"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>The compact run used for the figures and summaries below is clipped
+to a small projected window. It uses 40 sampled road origins and 12
+candidate safety exits.</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Input</th>
+<th align="left">Example value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Coordinate reference system</td>
+<td align="left">EPSG:32748</td>
+</tr>
+<tr class="even">
+<td align="left">Hazard-zone area (square km)</td>
+<td align="left">4.048</td>
+</tr>
+<tr class="odd">
+<td align="left">Road features</td>
+<td align="left">254</td>
+</tr>
+<tr class="even">
+<td align="left">Candidate safety exits</td>
+<td align="left">12</td>
+</tr>
+<tr class="odd">
+<td align="left">Sampled road origins</td>
+<td align="left">40</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="run-the-workflow">Run the workflow<a class="anchor" aria-label="anchor" href="#run-the-workflow"></a>
@@ -162,14 +240,99 @@ assumptions.</p>
 <span>  max_origins <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  max_destinations <span class="op">=</span> <span class="fl">25</span>,</span>
 <span>  walking_speed_mps <span class="op">=</span> <span class="fl">1.22</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">result</span><span class="op">$</span><span class="va">evac_polygons</span></span>
-<span><span class="va">result</span><span class="op">$</span><span class="va">distance_points</span></span></code></pre></div>
-<p>Before interpreting a map, review the coordinate system, terrain,
-hazard-zone definition, road connectivity, escape-point logic, and
-walking-speed assumption. Use [diagnose_evac_model()] to make those
-checks explicit.</p>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="../reference/figures/pkgdown-example-time.png" alt="Modeled evacuation time to safety for the compact packaged example."><div class="figcaption">Modeled evacuation time to safety for the
+compact packaged example.</div>
+</div>
+<p>The example summary is a description of the modeled road-origin
+results, not a measure of observed evacuation behavior.</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Modeled output</th>
+<th align="right">Example value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Minimum modeled time (minutes)</td>
+<td align="right">0.31</td>
+</tr>
+<tr class="even">
+<td align="left">Median modeled time (minutes)</td>
+<td align="right">10.09</td>
+</tr>
+<tr class="odd">
+<td align="left">Mean modeled time (minutes)</td>
+<td align="right">9.65</td>
+</tr>
+<tr class="even">
+<td align="left">Maximum modeled time (minutes)</td>
+<td align="right">22.84</td>
+</tr>
+<tr class="odd">
+<td align="left">Origins</td>
+<td align="right">40.00</td>
+</tr>
+<tr class="even">
+<td align="left">Destinations</td>
+<td align="right">12.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Walking speed (m/s)</td>
+<td align="right">1.22</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="what-you-get-back">What you get back<a class="anchor" aria-label="anchor" href="#what-you-get-back"></a>
+</h2>
+<p><code><a href="../reference/run_evacpath.html">run_evacpath()</a></code> returns a named list. The main layers are
+summarized below so you can inspect or write only the outputs needed for
+the analysis.</p>
+<table class="table">
+<colgroup>
+<col width="26%">
+<col width="73%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Object</th>
+<th align="left">Purpose</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">hazard_zone</td>
+<td align="left">Land-only area used for evacuation origins and mapped
+output.</td>
+</tr>
+<tr class="even">
+<td align="left">escape_points</td>
+<td align="left">Candidate safety exits identified at the selected
+escape boundary.</td>
+</tr>
+<tr class="odd">
+<td align="left">road_points</td>
+<td align="left">Sampled road-based origins used for least-cost
+calculations.</td>
+</tr>
+<tr class="even">
+<td align="left">distance_points</td>
+<td align="left">Modeled distance to safety for sampled origins and
+zero-distance exits.</td>
+</tr>
+<tr class="odd">
+<td align="left">evac_polygons / time_grid</td>
+<td align="left">Polygonized modeled distance and time surface for map
+output.</td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>result$evac_polygons</code>,
+<code>result$distance_points</code>, <code>result$time_grid</code>, and
+<code>result$escape_points</code> for the mapped and point outputs. Run
+<code><a href="../reference/diagnose_evac_model.html">diagnose_evac_model()</a></code> before interpreting a result to make
+coordinate-system, geometry, extent, and reachability checks
+explicit.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

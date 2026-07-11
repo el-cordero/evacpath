@@ -27,11 +27,22 @@ comparison <- compare_evac_scenarios(
 comparison$summary
 ```
 
-The summary includes origin and destination counts, time statistics,
-threshold percentages, walking speed, and the selected least-cost
-settings. A scenario with incomplete outputs is retained with missing
-summary values rather than discarding the entire comparison.
+![Scenario sensitivity in modeled evacuation
+time.](../reference/figures/pkgdown-example-scenarios.png)
+
+Scenario sensitivity in modeled evacuation time.
+
+The compact packaged example below retains the scenario-level time
+metrics and the assumptions used to generate them.
+
+| Scenario | Origins | Exits | Walking speed | Median min. | Mean min. | Maximum min. | Assumption |
+|:---|---:|---:|---:|---:|---:|---:|:---|
+| baseline | 25 | 8 | 1.22 | 7.27 | 9.75 | 22.84 | Baseline walking-speed and routing assumptions. |
+| slow_walkers | 25 | 8 | 0.75 | 11.83 | 15.86 | 37.15 | Changes time conversion; route distance is held by the same routing setup. |
+| conservative_routing | 25 | 8 | 1.22 | 7.48 | 10.26 | 23.96 | Uses 8 neighbours and a 30 percent maximum slope. |
 
 Treat scenario outputs as sensitivity analysis. A slower walking speed
 changes time conversion; conductance and neighbourhood settings can
-change modeled route geometry as well as distance.
+change modeled route geometry as well as distance. A scenario with
+incomplete outputs is retained with missing summary values rather than
+discarding the whole comparison.

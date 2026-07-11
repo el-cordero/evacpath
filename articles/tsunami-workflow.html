@@ -18,35 +18,82 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Tsunami evacuation workflow">
 <style>
 :root {
-  --evac-orange: #f28e2b;
-  --evac-red: #e15759;
-  --evac-charcoal: #333333;
-  --evac-soft-gray: #f2f2f2;
+  --evac-primary: #465a5a;
+  --evac-primary-dark: #2f3d3d;
+  --evac-accent: #b66a2e;
+  --evac-safety: #a94b4d;
+  --evac-charcoal: #2f3433;
+  --evac-muted: #66706e;
+  --evac-bg: #faf9f6;
+  --evac-soft: #f1f3f2;
+  --evac-border: #d8dedb;
+}
+body {
+  color: var(--evac-charcoal);
+  background: var(--evac-bg);
 }
 div.sourceCode pre {
   min-height: 0 !important;
   padding-top: 0.9rem !important;
   padding-bottom: 0.9rem !important;
+  background: var(--evac-soft);
+  border: 1px solid var(--evac-border);
+  border-radius: 8px;
 }
 div.sourceCode pre code span:empty {
   display: none;
 }
 .navbar {
-  border-bottom: 4px solid var(--evac-orange);
+  border-bottom: 1px solid var(--evac-border);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.035);
 }
 .navbar-brand {
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 .template-home .page-header {
-  border-left: 0.4rem solid var(--evac-orange);
-  padding-left: 1rem;
+  border-left: none;
+  padding-left: 0;
 }
 .template-home .description {
-  color: var(--evac-charcoal);
-  font-size: 1.15rem;
+  color: var(--evac-muted);
+  font-size: 1.12rem;
 }
 [data-bs-theme="dark"] .template-home .description {
   color: var(--bs-body-color);
+}
+img {
+  max-width: 100%;
+}
+.template-article main img,
+.template-home main img {
+  border: 1px solid var(--evac-border);
+  border-radius: 10px;
+  background: white;
+  padding: 0.35rem;
+}
+.figure, .float {
+  margin-top: 1.4rem;
+  margin-bottom: 1.8rem;
+}
+.figcaption, .caption {
+  color: var(--evac-muted);
+  font-size: 0.92rem;
+  margin-top: 0.45rem;
+}
+.table {
+  font-size: 0.95rem;
+}
+.table thead th {
+  background: var(--evac-soft);
+  border-bottom: 1px solid var(--evac-border);
+}
+.table > :not(caption) > * > * {
+  border-bottom-color: var(--evac-border);
+}
+a {
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
 }
 </style>
 </head>
@@ -119,17 +166,49 @@ for finding a meaningful inland exit.
 <div class="section level2">
 <h2 id="three-spatial-roles">Three spatial roles<a class="anchor" aria-label="anchor" href="#three-spatial-roles"></a>
 </h2>
-<ul>
-<li>The <strong>land-only hazard zone</strong> is used to generate road
-origins and clip final time outputs.</li>
-<li>The <strong>water-combined escape zone</strong> combines inundated
-land with water so the shoreline is not treated as an artificial safety
-boundary.</li>
-<li>The <strong>road-aware escape boundary</strong> adds buffered road
-corridors before escape points are found, preserving bridge, causeway,
-and walkway connections that may otherwise disappear from a land-water
-split.</li>
-</ul>
+<table class="table">
+<colgroup>
+<col width="17%">
+<col width="25%">
+<col width="22%">
+<col width="34%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Object</th>
+<th align="left">Role</th>
+<th align="left">Used for</th>
+<th align="left">Common mistake avoided</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Land-only hazard zone</td>
+<td align="left">Origin and mapped-output area</td>
+<td align="left">Road origins and final time outputs</td>
+<td align="left">Mapping through water or starting origins offshore</td>
+</tr>
+<tr class="even">
+<td align="left">Water-combined escape zone</td>
+<td align="left">Meaningful inland exit context</td>
+<td align="left">Avoiding coastline exits</td>
+<td align="left">Treating the shoreline as an automatic safety
+boundary</td>
+</tr>
+<tr class="odd">
+<td align="left">Road-aware escape boundary</td>
+<td align="left">Road-preserving exit-detection boundary</td>
+<td align="left">Finding candidate safety exits</td>
+<td align="left">Dropping bridge, causeway, or walkway connections</td>
+</tr>
+</tbody>
+</table>
+<div class="float">
+<img src="../reference/figures/pkgdown-example-inputs.png" alt="The compact example shows land-only hazard mapping, roads, and candidate safety exits."><div class="figcaption">The compact example shows land-only hazard
+mapping, roads, and candidate safety exits.</div>
+</div>
+<p>The water-combined escape zone is a processing layer, so it is not
+shown as a separate planning boundary in this compact map. Its role is
+to prevent a land-water split from creating artificial coastline
+exits.</p>
 </div>
 <div class="section level2">
 <h2 id="prepare-the-zones">Prepare the zones<a class="anchor" aria-label="anchor" href="#prepare-the-zones"></a>
