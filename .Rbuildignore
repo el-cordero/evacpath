@@ -1,4 +1,5 @@
 ^README\.Rmd$
+^_pkgdown\.yml$
 ^\.github$
 ^paper$
 ^inst/legacy$
