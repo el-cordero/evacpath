@@ -184,6 +184,38 @@ bottlenecks <- tryCatch(
   error = function(e) NULL
 )
 
+diagnostics <- diagnose_evac_model(
+  hazard_zone = result$hazard_zone,
+  roads = result$roads,
+  dem = result$dem,
+  target_crs = target_crs,
+  escape_zone = result$escape_zone,
+  origins = result$road_points,
+  destinations = result$escape_points,
+  check_reachability = FALSE
+)
+
+diagnostic_summary <- data.frame(
+  check = c(
+    "Errors", "Warnings", "Informational checks", "Road features",
+    "Sampled origins", "Candidate safety exits", "DEM resolution (m)"
+  ),
+  result = c(
+    diagnostics$summary$n_errors,
+    diagnostics$summary$n_warnings,
+    diagnostics$summary$n_info,
+    diagnostics$summary$n_roads,
+    diagnostics$summary$n_origins,
+    diagnostics$summary$n_destinations,
+    paste(
+      format(round(diagnostics$summary$dem_resolution_x, 2), nsmall = 2),
+      format(round(diagnostics$summary$dem_resolution_y, 2), nsmall = 2),
+      sep = " x "
+    )
+  ),
+  stringsAsFactors = FALSE
+)
+
 output_objects <- data.frame(
   object = c(
     "hazard_zone",
@@ -220,6 +252,11 @@ utils::write.csv(
 utils::write.csv(
   output_objects,
   file.path(data_dir, "pkgdown-example-output-objects.csv"),
+  row.names = FALSE
+)
+utils::write.csv(
+  diagnostic_summary,
+  file.path(data_dir, "pkgdown-example-diagnostic-summary.csv"),
   row.names = FALSE
 )
 

@@ -9,6 +9,9 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+time_summary <- utils::read.csv(system.file(
+  "extdata/pkgdown-example-time-summary.csv", package = "evacpath"
+))
 zone_roles <- data.frame(
   object = c("Land-only hazard zone", "Water-combined escape zone", "Road-aware escape boundary"),
   role = c("Origin and mapped-output area", "Meaningful inland exit context", "Road-preserving exit-detection boundary"),
@@ -80,6 +83,12 @@ result <- run_evacpath(
   escape_zone_road_buffer_m = 2,
   escape_zone_crop_buffer_m = 3
 )
+```
+
+![Modeled evacuation time to safety for the compact tsunami example.](../reference/figures/pkgdown-example-time.png)
+
+```{r tsunami-result, echo = FALSE, eval = TRUE}
+knitr::kable(time_summary, col.names = c("Modeled output", "Example value"))
 ```
 
 Inspect the local hazard boundary, road network, elevation sign convention, and

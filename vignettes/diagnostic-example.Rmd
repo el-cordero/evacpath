@@ -43,6 +43,12 @@ knitr::opts_chunk$set(
   dpi = 120
 )
 old_options <- options(width = 72)
+diagnostic_summary <- utils::read.csv(system.file(
+  "extdata/pkgdown-example-diagnostic-summary.csv", package = "evacpath"
+))
+time_summary <- utils::read.csv(system.file(
+  "extdata/pkgdown-example-time-summary.csv", package = "evacpath"
+))
 ```
 
 This vignette is a diagnostic walkthrough for the example tsunami-evacuation workflow. It is intentionally more detailed than a normal user vignette because its purpose is to test every major `evacpath` function independently before trusting the high-level `run_evacpath()` wrapper.
@@ -62,6 +68,24 @@ hazard_zone          = land-only tsunami evacuation zone for origins/output
 escape_zone          = land-only TEZ + water, used as base escape boundary
 roads_for_escape     = roads cropped to an inset study extent
 escape_boundary_zone = escape_zone + buffered roads_for_escape
+```
+
+# Representative packaged output
+
+The detailed code below is off by default so this guide remains practical to
+build and browse. These static results come from the compact packaged run and
+show the kinds of spatial and QA/QC outputs to review before a local rerun.
+
+![Example inputs and candidate safety exits.](../reference/figures/pkgdown-example-inputs.png)
+
+![Modeled evacuation time to safety.](../reference/figures/pkgdown-example-time.png)
+
+```{r representative-result, echo = FALSE}
+knitr::kable(time_summary, col.names = c("Modeled output", "Example value"))
+```
+
+```{r representative-diagnostics, echo = FALSE}
+knitr::kable(diagnostic_summary, col.names = c("QA/QC check", "Result"))
 ```
 
 To run the full diagnostic workflow locally:

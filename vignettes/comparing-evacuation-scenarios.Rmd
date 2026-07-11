@@ -9,6 +9,12 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+scenario_summary <- utils::read.csv(system.file(
+  "extdata/pkgdown-example-scenario-summary.csv", package = "evacpath"
+))
+diagnostic_summary <- utils::read.csv(system.file(
+  "extdata/pkgdown-example-diagnostic-summary.csv", package = "evacpath"
+))
 ```
 
 `evacpath` can compare pedestrian-evacuation assumptions without changing the
@@ -84,6 +90,20 @@ comparison <- compare_evac_scenarios(
 comparison$summary
 ```
 
+![Scenario sensitivity in modeled evacuation time.](../reference/figures/pkgdown-example-scenarios.png)
+
+```{r scenario-result, echo = FALSE, eval = TRUE}
+knitr::kable(
+  scenario_summary[, c(
+    "scenario", "walking_speed_mps", "median_evac_time", "mean_evac_time",
+    "max_evac_time"
+  )],
+  digits = 2,
+  col.names = c("Scenario", "Walking speed", "Median min.", "Mean min.",
+                "Maximum min.")
+)
+```
+
 ## Diagnose inputs
 
 Diagnostics collect coordinate reference system, geometry, overlap, elevation,
@@ -104,6 +124,14 @@ diagnostics
 has_errors(diagnostics)
 ```
 
+The generator also records a compact QA/QC result from the same packaged run.
+It is a snapshot of the supplied inputs and settings, not a general guarantee
+about a new study area.
+
+```{r diagnostic-result, echo = FALSE, eval = TRUE}
+knitr::kable(diagnostic_summary, col.names = c("QA/QC check", "Result"))
+```
+
 ## Map bottlenecks
 
 Routes are retained only when `keep_routes = TRUE`. This keeps ordinary runs
@@ -116,3 +144,4 @@ plot(bottlenecks$density_raster)
 plot(bottlenecks$high_density_polygons, add = TRUE)
 ```
 
+![Modeled high-use corridors from the compact packaged example.](../reference/figures/pkgdown-example-corridors.png)

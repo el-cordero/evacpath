@@ -7,7 +7,7 @@
 * Added `map_evac_bottlenecks()` for modeled route-density and high-use corridor mapping.
 * Added `diagnose_evac_model()` and `has_errors()` for spatial quality assurance and quality control checks.
 * Added `validate_evac_routes()` for buffer-overlap, Hausdorff-distance, and optional path-deviation-index comparisons against reference routes.
-* Refreshed the pkgdown site with neutral styling, compact static example maps, and output summaries generated from packaged data.
+* Refreshed the pkgdown site with a dark-red navigation theme, visible result panels in every guide, and compact static example outputs generated from packaged data.
 
 # evacpath 0.1.1
 
