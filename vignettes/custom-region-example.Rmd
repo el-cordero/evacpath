@@ -1,5 +1,6 @@
 ---
 title: "Using evacpath in a new region"
+description: "Adapt the workflow to local hazard, road, elevation, and planning inputs."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using evacpath in a new region}
@@ -28,6 +29,14 @@ checklist <- data.frame(
     "CRS, geometry, extent, origins, exits, and reachability checks."
   )
 )
+figure_html <- function(name, alt) {
+  path <- system.file("extdata", name, package = "evacpath")
+  if (!nzchar(path)) stop("Installed example figure is unavailable.", call. = FALSE)
+  knitr::asis_output(sprintf(
+    '<figure><img src="%s" alt="%s" style="width: 100%%; height: auto;"><figcaption>%s</figcaption></figure>',
+    knitr::image_uri(path), alt, alt
+  ))
+}
 ```
 
 For a new region, `evacpath` expects three core spatial inputs:
@@ -67,7 +76,9 @@ For context, this is the model result returned by a compact run using the
 packaged inputs. A new region should be interpreted only after its own input
 and QA/QC review.
 
-![Modeled evacuation time to safety for the compact packaged example.](../reference/figures/pkgdown-example-time.png)
+```{r custom-region-time-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-time.png", "Modeled evacuation time to safety for the compact packaged example.")
+```
 
 ```{r regional-result, echo = FALSE, eval = TRUE}
 knitr::kable(time_summary, col.names = c("Modeled output", "Example value"))

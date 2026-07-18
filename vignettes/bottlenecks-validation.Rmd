@@ -1,5 +1,6 @@
 ---
 title: "Bottlenecks and route validation"
+description: "Map modeled route density and compare modeled routes with reference lines."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Bottlenecks and route validation}
@@ -18,6 +19,14 @@ bottleneck_outputs <- data.frame(
     "Route count, density threshold, and high-density area metrics."
   )
 )
+figure_html <- function(name, alt) {
+  path <- system.file("extdata", name, package = "evacpath")
+  if (!nzchar(path)) stop("Installed example figure is unavailable.", call. = FALSE)
+  knitr::asis_output(sprintf(
+    '<figure><img src="%s" alt="%s" style="width: 100%%; height: auto;"><figcaption>%s</figcaption></figure>',
+    knitr::image_uri(path), alt, alt
+  ))
+}
 ```
 
 Route-density analysis can identify **modeled high-use corridors**. It does not
@@ -51,7 +60,9 @@ bottlenecks$summary
 bottlenecks$high_density_polygons
 ```
 
-![Modeled high-use corridors from the compact packaged example.](../reference/figures/pkgdown-example-corridors.png)
+```{r bottlenecks-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-corridors.png", "Modeled high-use corridors from the compact packaged example.")
+```
 
 ```{r bottleneck-outputs, echo = FALSE, eval = TRUE}
 knitr::kable(bottleneck_outputs, col.names = c("Output", "Purpose"))

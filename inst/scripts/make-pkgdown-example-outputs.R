@@ -263,9 +263,9 @@ utils::write.csv(
 local({
   png(
     file.path(figure_dir, "pkgdown-example-inputs.png"),
-    width = 1500,
-    height = 850,
-    res = 180
+    width = 1000,
+    height = 567,
+    res = 144
   )
   oldpar <- par(no.readonly = TRUE)
   on.exit({
@@ -298,9 +298,9 @@ local({
 local({
   png(
     file.path(figure_dir, "pkgdown-example-time.png"),
-    width = 1500,
-    height = 850,
-    res = 180
+    width = 1000,
+    height = 567,
+    res = 144
   )
   oldpar <- par(no.readonly = TRUE)
   on.exit({
@@ -326,9 +326,9 @@ local({
 local({
   png(
     file.path(figure_dir, "pkgdown-example-scenarios.png"),
-    width = 1500,
-    height = 750,
-    res = 180
+    width = 1000,
+    height = 500,
+    res = 144
   )
   oldpar <- par(no.readonly = TRUE)
   on.exit({
@@ -366,9 +366,9 @@ if (!is.null(bottlenecks) && !is.null(bottlenecks$high_density_polygons) &&
   local({
     png(
       file.path(figure_dir, "pkgdown-example-corridors.png"),
-      width = 1500,
-      height = 850,
-      res = 180
+      width = 1000,
+      height = 567,
+      res = 144
     )
     oldpar <- par(no.readonly = TRUE)
     on.exit({
@@ -400,3 +400,26 @@ if (!is.null(bottlenecks) && !is.null(bottlenecks$high_density_polygons) &&
     )
   })
 }
+
+# Keep the installed vignettes self-contained as well as the pkgdown site.
+static_figure_files <- c(
+  "pkgdown-example-inputs.png",
+  "pkgdown-example-time.png",
+  "pkgdown-example-scenarios.png",
+  "pkgdown-example-corridors.png"
+)
+missing_static_figures <- static_figure_files[
+  !file.exists(file.path(figure_dir, static_figure_files))
+]
+if (length(missing_static_figures) > 0L) {
+  stop(
+    "Could not generate installed vignette figures: ",
+    paste(missing_static_figures, collapse = ", "),
+    call. = FALSE
+  )
+}
+invisible(file.copy(
+  file.path(figure_dir, static_figure_files),
+  data_dir,
+  overwrite = TRUE
+))

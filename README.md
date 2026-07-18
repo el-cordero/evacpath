@@ -1,8 +1,13 @@
 # evacpath <img src="https://raw.githubusercontent.com/el-cordero/evacpath/main/man/figures/logo.png" align="right" height="140" alt="evacpath logo" />
 
 [![pkgdown](https://github.com/el-cordero/evacpath/actions/workflows/pkgdown.yaml/badge.svg?branch=main)](https://el-cordero.github.io/evacpath/)
+[![R-CMD-check](https://github.com/el-cordero/evacpath/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/el-cordero/evacpath/actions/workflows/R-CMD-check.yaml)
 
-`evacpath` is an R package for road-constrained pedestrian evacuation modeling using least-cost path analysis. It takes generic hazard, road/pathway, and elevation inputs, then returns distance-to-safety and evacuation-time outputs for any projected study area.
+`evacpath` is an R package for road-constrained pedestrian evacuation modeling
+using least-cost path analysis. It supports researchers, planners, and analysts
+who need a transparent workflow for exploring modeled distance to safety and
+evacuation time from hazard, road/pathway, and elevation inputs in a projected
+study area.
 
 `evacpath` is available from [CRAN](https://CRAN.R-project.org/package=evacpath) with a permanent [CRAN package DOI](https://doi.org/10.32614/CRAN.package.evacpath).
 Package documentation and guides are available at the [evacpath website](https://el-cordero.github.io/evacpath/).
@@ -30,13 +35,14 @@ Start with the [Get started guide](https://el-cordero.github.io/evacpath/article
 
 ## Installation
 
-Install the released package from CRAN:
+Install the released, peer-reviewed package from CRAN:
 
 ```r
 install.packages("evacpath")
 ```
 
-Install the development version from GitHub:
+Install the development version from GitHub only when you need changes that
+have not yet been released on CRAN:
 
 ```r
 remotes::install_github("el-cordero/evacpath")
@@ -193,6 +199,15 @@ devtools::load_all("evacpath")
 devtools::document("evacpath")
 devtools::check("evacpath")
 ```
+
+## Community and project policies
+
+Read the [contribution guide](https://github.com/el-cordero/evacpath/blob/main/CONTRIBUTING.md),
+[Code of Conduct](https://github.com/el-cordero/evacpath/blob/main/CODE_OF_CONDUCT.md),
+[support policy](https://github.com/el-cordero/evacpath/blob/main/SUPPORT.md), and
+[security policy](https://github.com/el-cordero/evacpath/blob/main/SECURITY.md).
+Report bugs or request enhancements through the
+[issue tracker](https://github.com/el-cordero/evacpath/issues).
 
 ## Notes
 

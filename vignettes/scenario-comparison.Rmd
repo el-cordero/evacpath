@@ -1,5 +1,6 @@
 ---
 title: "Scenario comparison"
+description: "Compare walking-speed and least-cost-path assumptions across named scenarios."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Scenario comparison}
@@ -12,6 +13,14 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 scenario_summary <- utils::read.csv(system.file(
   "extdata/pkgdown-example-scenario-summary.csv", package = "evacpath"
 ))
+figure_html <- function(name, alt) {
+  path <- system.file("extdata", name, package = "evacpath")
+  if (!nzchar(path)) stop("Installed example figure is unavailable.", call. = FALSE)
+  knitr::asis_output(sprintf(
+    '<figure><img src="%s" alt="%s" style="width: 100%%; height: auto;"><figcaption>%s</figcaption></figure>',
+    knitr::image_uri(path), alt, alt
+  ))
+}
 ```
 
 `compare_evac_scenarios()` runs the same study inputs under named parameter
@@ -39,7 +48,9 @@ comparison <- compare_evac_scenarios(
 comparison$summary
 ```
 
-![Scenario sensitivity in modeled evacuation time.](../reference/figures/pkgdown-example-scenarios.png)
+```{r scenario-comparison-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-scenarios.png", "Scenario sensitivity in modeled evacuation time.")
+```
 
 The compact packaged example below retains the scenario-level time metrics and
 the assumptions used to generate them.

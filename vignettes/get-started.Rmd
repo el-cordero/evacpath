@@ -1,5 +1,6 @@
 ---
 title: "Get started with evacpath"
+description: "Run a compact road-constrained evacuation model with packaged data."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Get started with evacpath}
@@ -18,6 +19,14 @@ time_summary <- utils::read.csv(system.file(
 output_objects <- utils::read.csv(system.file(
   "extdata/pkgdown-example-output-objects.csv", package = "evacpath"
 ))
+figure_html <- function(name, alt) {
+  path <- system.file("extdata", name, package = "evacpath")
+  if (!nzchar(path)) stop("Installed example figure is unavailable.", call. = FALSE)
+  knitr::asis_output(sprintf(
+    '<figure><img src="%s" alt="%s" style="width: 100%%; height: auto;"><figcaption>%s</figcaption></figure>',
+    knitr::image_uri(path), alt, alt
+  ))
+}
 ```
 
 `evacpath` estimates road-constrained pedestrian distance to safety and converts
@@ -78,7 +87,9 @@ result <- run_evacpath(
 )
 ```
 
-![Modeled evacuation time to safety for the compact packaged example.](../reference/figures/pkgdown-example-time.png)
+```{r modeled-time-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-time.png", "Modeled evacuation time to safety for the compact packaged example.")
+```
 
 The example summary is a description of the modeled road-origin results, not a
 measure of observed evacuation behavior.

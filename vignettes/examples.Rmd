@@ -1,5 +1,6 @@
 ---
 title: "Example workflow"
+description: "Inspect packaged inputs, modeled time outputs, and scenario summaries."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Example workflow}
@@ -21,6 +22,14 @@ scenario_summary <- utils::read.csv(system.file(
 output_objects <- utils::read.csv(system.file(
   "extdata/pkgdown-example-output-objects.csv", package = "evacpath"
 ))
+figure_html <- function(name, alt) {
+  path <- system.file("extdata", name, package = "evacpath")
+  if (!nzchar(path)) stop("Installed example figure is unavailable.", call. = FALSE)
+  knitr::asis_output(sprintf(
+    '<figure><img src="%s" alt="%s" style="width: 100%%; height: auto;"><figcaption>%s</figcaption></figure>',
+    knitr::image_uri(path), alt, alt
+  ))
+}
 ```
 
 This gallery uses the packaged example data in a focused projected window. It
@@ -29,7 +38,9 @@ evacuation plan or a substitute for local review.
 
 ## Example inputs
 
-![Example inputs and candidate safety exits.](../reference/figures/pkgdown-example-inputs.png)
+```{r example-inputs-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-inputs.png", "Example inputs and candidate safety exits.")
+```
 
 ```{r input-summary, echo = FALSE, eval = TRUE}
 knitr::kable(input_summary, col.names = c("Input", "Example value"))
@@ -44,7 +55,9 @@ intersections with the selected escape boundary, not confirmed safe locations.
 
 ## Modeled evacuation time
 
-![Modeled evacuation time to safety.](../reference/figures/pkgdown-example-time.png)
+```{r example-time-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-time.png", "Modeled evacuation time to safety.")
+```
 
 The time surface converts modeled least-cost distance to safety with the chosen
 walking speed. It is sensitive to the elevation surface, road mask,
@@ -56,7 +69,9 @@ knitr::kable(time_summary, col.names = c("Modeled output", "Example value"))
 
 ## Scenario comparison
 
-![Scenario sensitivity in modeled evacuation time.](../reference/figures/pkgdown-example-scenarios.png)
+```{r example-scenarios-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-scenarios.png", "Scenario sensitivity in modeled evacuation time.")
+```
 
 The slower-walker scenario changes the time conversion. The conservative-routing
 scenario changes least-cost path settings and may therefore change both modeled

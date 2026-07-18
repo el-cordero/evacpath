@@ -1,5 +1,6 @@
 ---
 title: "Comparing evacuation scenarios with evacpath"
+description: "Run baseline, sensitivity, diagnostic, and corridor workflows with packaged data."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Comparing evacuation scenarios with evacpath}
@@ -15,6 +16,14 @@ scenario_summary <- utils::read.csv(system.file(
 diagnostic_summary <- utils::read.csv(system.file(
   "extdata/pkgdown-example-diagnostic-summary.csv", package = "evacpath"
 ))
+figure_html <- function(name, alt) {
+  path <- system.file("extdata", name, package = "evacpath")
+  if (!nzchar(path)) stop("Installed example figure is unavailable.", call. = FALSE)
+  knitr::asis_output(sprintf(
+    '<figure><img src="%s" alt="%s" style="width: 100%%; height: auto;"><figcaption>%s</figcaption></figure>',
+    knitr::image_uri(path), alt, alt
+  ))
+}
 ```
 
 `evacpath` can compare pedestrian-evacuation assumptions without changing the
@@ -90,7 +99,9 @@ comparison <- compare_evac_scenarios(
 comparison$summary
 ```
 
-![Scenario sensitivity in modeled evacuation time.](../reference/figures/pkgdown-example-scenarios.png)
+```{r comparison-scenarios-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-scenarios.png", "Scenario sensitivity in modeled evacuation time.")
+```
 
 ```{r scenario-result, echo = FALSE, eval = TRUE}
 knitr::kable(
@@ -144,4 +155,6 @@ plot(bottlenecks$density_raster)
 plot(bottlenecks$high_density_polygons, add = TRUE)
 ```
 
-![Modeled high-use corridors from the compact packaged example.](../reference/figures/pkgdown-example-corridors.png)
+```{r comparison-corridors-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-corridors.png", "Modeled high-use corridors from the compact packaged example.")
+```

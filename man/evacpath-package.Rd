@@ -22,6 +22,7 @@ and \code{run_evacpath()} to run the full workflow.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://el-cordero.github.io/evacpath/}
   \item \url{https://github.com/el-cordero/evacpath}
   \item Report bugs at \url{https://github.com/el-cordero/evacpath/issues}
 }

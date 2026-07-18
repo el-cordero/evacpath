@@ -173,7 +173,7 @@ home:
 
 navbar:
   structure:
-    left: [intro, reference, examples, articles, news]
+    left: [intro, reference, examples, articles, citation, news]
     right: [search, github]
   components:
     intro:
@@ -197,6 +197,9 @@ navbar:
           href: articles/scenario-comparison.html
         - text: Bottlenecks and validation
           href: articles/bottlenecks-validation.html
+    citation:
+      text: Citation
+      href: authors.html
 
 reference:
   - title: Package overview

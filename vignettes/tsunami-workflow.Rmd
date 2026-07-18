@@ -1,5 +1,6 @@
 ---
 title: "Tsunami evacuation workflow"
+description: "Prepare tsunami-specific hazard and escape zones without coastline exits."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Tsunami evacuation workflow}
@@ -22,6 +23,14 @@ zone_roles <- data.frame(
     "Dropping bridge, causeway, or walkway connections"
   )
 )
+figure_html <- function(name, alt) {
+  path <- system.file("extdata", name, package = "evacpath")
+  if (!nzchar(path)) stop("Installed example figure is unavailable.", call. = FALSE)
+  knitr::asis_output(sprintf(
+    '<figure><img src="%s" alt="%s" style="width: 100%%; height: auto;"><figcaption>%s</figcaption></figure>',
+    knitr::image_uri(path), alt, alt
+  ))
+}
 ```
 
 Tsunami workflows often need different zones for mapped exposure and for
@@ -37,7 +46,9 @@ knitr::kable(
 )
 ```
 
-![The compact example shows land-only hazard mapping, roads, and candidate safety exits.](../reference/figures/pkgdown-example-inputs.png)
+```{r tsunami-inputs-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-inputs.png", "The compact example shows land-only hazard mapping, roads, and candidate safety exits.")
+```
 
 The water-combined escape zone is a processing layer, so it is not shown as a
 separate planning boundary in this compact map. Its role is to prevent a
@@ -85,7 +96,9 @@ result <- run_evacpath(
 )
 ```
 
-![Modeled evacuation time to safety for the compact tsunami example.](../reference/figures/pkgdown-example-time.png)
+```{r tsunami-time-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-time.png", "Modeled evacuation time to safety for the compact tsunami example.")
+```
 
 ```{r tsunami-result, echo = FALSE, eval = TRUE}
 knitr::kable(time_summary, col.names = c("Modeled output", "Example value"))

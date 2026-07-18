@@ -1,0 +1,11 @@
+citHeader("To cite evacpath in publications, use:")
+
+bibentry(
+  bibtype = "Manual",
+  title = "evacpath: Least-Cost Pedestrian Evacuation Modeling",
+  author = c(person("Elvin", "Cordero")),
+  year = "2026",
+  note = paste("R package version", meta$Version),
+  doi = "10.32614/CRAN.package.evacpath",
+  url = "https://CRAN.R-project.org/package=evacpath"
+)

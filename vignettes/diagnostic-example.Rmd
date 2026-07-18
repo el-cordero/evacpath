@@ -1,5 +1,6 @@
 ---
 title: "Evacuation workflow: function-by-function diagnostics"
+description: "Inspect each preparation and routing step before interpreting a model result."
 output: rmarkdown::html_vignette
 params:
   run_diagnostics: false
@@ -49,6 +50,14 @@ diagnostic_summary <- utils::read.csv(system.file(
 time_summary <- utils::read.csv(system.file(
   "extdata/pkgdown-example-time-summary.csv", package = "evacpath"
 ))
+figure_html <- function(name, alt) {
+  path <- system.file("extdata", name, package = "evacpath")
+  if (!nzchar(path)) stop("Installed example figure is unavailable.", call. = FALSE)
+  knitr::asis_output(sprintf(
+    '<figure><img src="%s" alt="%s" style="width: 100%%; height: auto;"><figcaption>%s</figcaption></figure>',
+    knitr::image_uri(path), alt, alt
+  ))
+}
 ```
 
 This vignette is a diagnostic walkthrough for the example tsunami-evacuation workflow. It is intentionally more detailed than a normal user vignette because its purpose is to test every major `evacpath` function independently before trusting the high-level `run_evacpath()` wrapper.
@@ -76,9 +85,13 @@ The detailed code below is off by default so this guide remains practical to
 build and browse. These static results come from the compact packaged run and
 show the kinds of spatial and QA/QC outputs to review before a local rerun.
 
-![Example inputs and candidate safety exits.](../reference/figures/pkgdown-example-inputs.png)
+```{r diagnostic-inputs-figure, echo = FALSE, results = "asis"}
+figure_html("pkgdown-example-inputs.png", "Example inputs and candidate safety exits.")
+```
 
-![Modeled evacuation time to safety.](../reference/figures/pkgdown-example-time.png)
+```{r diagnostic-time-figure, echo = FALSE, results = "asis"}
+figure_html("pkgdown-example-time.png", "Modeled evacuation time to safety.")
+```
 
 ```{r representative-result, echo = FALSE}
 knitr::kable(time_summary, col.names = c("Modeled output", "Example value"))

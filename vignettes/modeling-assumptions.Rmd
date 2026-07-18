@@ -1,5 +1,6 @@
 ---
 title: "Modeling assumptions"
+description: "Review coordinate systems, routing settings, and interpretation limits."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Modeling assumptions}
@@ -12,6 +13,14 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 scenario_summary <- utils::read.csv(system.file(
   "extdata/pkgdown-example-scenario-summary.csv", package = "evacpath"
 ))
+figure_html <- function(name, alt) {
+  path <- system.file("extdata", name, package = "evacpath")
+  if (!nzchar(path)) stop("Installed example figure is unavailable.", call. = FALSE)
+  knitr::asis_output(sprintf(
+    '<figure><img src="%s" alt="%s" style="width: 100%%; height: auto;"><figcaption>%s</figcaption></figure>',
+    knitr::image_uri(path), alt, alt
+  ))
+}
 ```
 
 Evacuation maps are conditional on the spatial inputs and modeling choices that
@@ -58,7 +67,9 @@ run_evacpath(
 `walking_speed_mps` converts modeled route distance into time. It should be set
 to the population and planning scenario of interest.
 
-![Scenario sensitivity in modeled evacuation time.](../reference/figures/pkgdown-example-scenarios.png)
+```{r assumptions-scenarios-figure, echo = FALSE, eval = TRUE, results = "asis"}
+figure_html("pkgdown-example-scenarios.png", "Scenario sensitivity in modeled evacuation time.")
+```
 
 The compact packaged run below shows the distinction: slower walking changes
 time conversion, while a different routing neighbourhood can also change
