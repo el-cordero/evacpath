@@ -31,6 +31,10 @@
 - Refreshed the pkgdown site with a dark-red navigation theme, visible
   result panels in every guide, and compact static example outputs
   generated from packaged data.
+- Added package citation metadata, community policies, cross-platform
+  continuous integration, and a repeatable source-archive URI audit.
+- Made vignette result figures package-internal so installed guides do
+  not depend on build-machine paths.
 
 ## evacpath 0.1.1
 

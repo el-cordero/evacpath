@@ -1,11 +1,13 @@
 # evacpath
 
 [![pkgdown](https://github.com/el-cordero/evacpath/actions/workflows/pkgdown.yaml/badge.svg?branch=main)](https://el-cordero.github.io/evacpath/)
+[![R-CMD-check](https://github.com/el-cordero/evacpath/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/el-cordero/evacpath/actions/workflows/R-CMD-check.yaml)
 
 `evacpath` is an R package for road-constrained pedestrian evacuation
-modeling using least-cost path analysis. It takes generic hazard,
-road/pathway, and elevation inputs, then returns distance-to-safety and
-evacuation-time outputs for any projected study area.
+modeling using least-cost path analysis. It supports researchers,
+planners, and analysts who need a transparent workflow for exploring
+modeled distance to safety and evacuation time from hazard,
+road/pathway, and elevation inputs in a projected study area.
 
 `evacpath` is available from
 [CRAN](https://CRAN.R-project.org/package=evacpath) with a permanent
@@ -54,7 +56,7 @@ or consult the
 
 ## Installation
 
-Install the released package from CRAN:
+Install the released, peer-reviewed package from CRAN:
 
 ``` r
 
@@ -62,7 +64,8 @@ Install the released package from CRAN:
 install.packages("evacpath")
 ```
 
-Install the development version from GitHub:
+Install the development version from GitHub only when you need changes
+that have not yet been released on CRAN:
 
 ``` r
 
@@ -240,6 +243,19 @@ devtools::load_all("evacpath")
 devtools::document("evacpath")
 devtools::check("evacpath")
 ```
+
+## Community and project policies
+
+Read the [contribution
+guide](https://github.com/el-cordero/evacpath/blob/main/CONTRIBUTING.md),
+[Code of
+Conduct](https://github.com/el-cordero/evacpath/blob/main/CODE_OF_CONDUCT.md),
+[support
+policy](https://github.com/el-cordero/evacpath/blob/main/SUPPORT.md),
+and [security
+policy](https://github.com/el-cordero/evacpath/blob/main/SECURITY.md).
+Report bugs or request enhancements through the [issue
+tracker](https://github.com/el-cordero/evacpath/issues).
 
 ## Notes
 
@@ -460,22 +476,54 @@ routes.
 
 - [Example
   workflow](https://el-cordero.github.io/evacpath/articles/examples.md):
+
+  Inspect packaged inputs, modeled time outputs, and scenario summaries.
+
 - [Tsunami evacuation
   workflow](https://el-cordero.github.io/evacpath/articles/tsunami-workflow.md):
+
+  Prepare tsunami-specific hazard and escape zones without coastline
+  exits.
+
 - [Using evacpath in a new
   region](https://el-cordero.github.io/evacpath/articles/custom-region-example.md):
+
+  Adapt the workflow to local hazard, road, elevation, and planning
+  inputs.
+
 - [Evacuation workflow: function-by-function
   diagnostics](https://el-cordero.github.io/evacpath/articles/diagnostic-example.md):
+
+  Inspect each preparation and routing step before interpreting a model
+  result.
 
 ### Guides
 
 - [Get started with
   evacpath](https://el-cordero.github.io/evacpath/articles/get-started.md):
+
+  Run a compact road-constrained evacuation model with packaged data.
+
 - [Modeling
   assumptions](https://el-cordero.github.io/evacpath/articles/modeling-assumptions.md):
+
+  Review coordinate systems, routing settings, and interpretation
+  limits.
+
 - [Scenario
   comparison](https://el-cordero.github.io/evacpath/articles/scenario-comparison.md):
+
+  Compare walking-speed and least-cost-path assumptions across named
+  scenarios.
+
 - [Comparing evacuation scenarios with
   evacpath](https://el-cordero.github.io/evacpath/articles/comparing-evacuation-scenarios.md):
+
+  Run baseline, sensitivity, diagnostic, and corridor workflows with
+  packaged data.
+
 - [Bottlenecks and route
   validation](https://el-cordero.github.io/evacpath/articles/bottlenecks-validation.md):
+
+  Map modeled route density and compare modeled routes with reference
+  lines.

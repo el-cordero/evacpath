@@ -8,15 +8,17 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/el-cordero/evacpath/blob/main/DESCRIPTION)
+[`inst/CITATION`](https://github.com/el-cordero/evacpath/blob/main/inst/CITATION)
 
 Cordero E (2026). *evacpath: Least-Cost Pedestrian Evacuation Modeling*.
-R package version 0.2.0, <https://el-cordero.github.io/evacpath/>.
+[doi:10.32614/CRAN.package.evacpath](https://doi.org/10.32614/CRAN.package.evacpath).
+R package version 0.2.0, <https://CRAN.R-project.org/package=evacpath>.
 
     @Manual{,
       title = {evacpath: Least-Cost Pedestrian Evacuation Modeling},
       author = {Elvin Cordero},
       year = {2026},
       note = {R package version 0.2.0},
-      url = {https://el-cordero.github.io/evacpath/},
+      doi = {10.32614/CRAN.package.evacpath},
+      url = {https://CRAN.R-project.org/package=evacpath},
     }

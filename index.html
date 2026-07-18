@@ -208,6 +208,7 @@ a:not(.nav-link) {
     <li><a class="dropdown-item" href="articles/bottlenecks-validation.html">Bottlenecks and validation</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="authors.html">Citation</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -227,8 +228,8 @@ a:not(.nav-link) {
 <img src="logo.png" class="logo" alt=""><h1 id="evacpath">evacpath<a class="anchor" aria-label="anchor" href="#evacpath"></a>
 </h1>
 </div>
-<p><a href="https://el-cordero.github.io/evacpath/"><img src="https://github.com/el-cordero/evacpath/actions/workflows/pkgdown.yaml/badge.svg?branch=main" alt="pkgdown"></a></p>
-<p><code>evacpath</code> is an R package for road-constrained pedestrian evacuation modeling using least-cost path analysis. It takes generic hazard, road/pathway, and elevation inputs, then returns distance-to-safety and evacuation-time outputs for any projected study area.</p>
+<p><a href="https://el-cordero.github.io/evacpath/"><img src="https://github.com/el-cordero/evacpath/actions/workflows/pkgdown.yaml/badge.svg?branch=main" alt="pkgdown"></a> <a href="https://github.com/el-cordero/evacpath/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/el-cordero/evacpath/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></p>
+<p><code>evacpath</code> is an R package for road-constrained pedestrian evacuation modeling using least-cost path analysis. It supports researchers, planners, and analysts who need a transparent workflow for exploring modeled distance to safety and evacuation time from hazard, road/pathway, and elevation inputs in a projected study area.</p>
 <p><code>evacpath</code> is available from <a href="https://CRAN.R-project.org/package=evacpath" class="external-link">CRAN</a> with a permanent <a href="https://doi.org/10.32614/CRAN.package.evacpath" class="external-link">CRAN package DOI</a>. Package documentation and guides are available at the <a href="https://el-cordero.github.io/evacpath/">evacpath website</a>.</p>
 <p>The package is designed around a simple idea:</p>
 <blockquote>
@@ -283,11 +284,11 @@ a:not(.nav-link) {
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install the released package from CRAN:</p>
+<p>Install the released, peer-reviewed package from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"evacpath"</span><span class="op">)</span></span></code></pre></div>
-<p>Install the development version from GitHub:</p>
+<p>Install the development version from GitHub only when you need changes that have not yet been released on CRAN:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"el-cordero/evacpath"</span><span class="op">)</span></span></code></pre></div>
@@ -501,6 +502,11 @@ a:not(.nav-link) {
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="st">"evacpath"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">document</a></span><span class="op">(</span><span class="st">"evacpath"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">check</a></span><span class="op">(</span><span class="st">"evacpath"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="community-and-project-policies">Community and project policies<a class="anchor" aria-label="anchor" href="#community-and-project-policies"></a>
+</h2>
+<p>Read the <a href="https://github.com/el-cordero/evacpath/blob/main/CONTRIBUTING.md" class="external-link">contribution guide</a>, <a href="https://github.com/el-cordero/evacpath/blob/main/CODE_OF_CONDUCT.md" class="external-link">Code of Conduct</a>, <a href="https://github.com/el-cordero/evacpath/blob/main/SUPPORT.md" class="external-link">support policy</a>, and <a href="https://github.com/el-cordero/evacpath/blob/main/SECURITY.md" class="external-link">security policy</a>. Report bugs or request enhancements through the <a href="https://github.com/el-cordero/evacpath/issues" class="external-link">issue tracker</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>

@@ -1,6 +1,10 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://el-cordero.github.io/evacpath/404.html</loc></url>
+<url><loc>https://el-cordero.github.io/evacpath/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://el-cordero.github.io/evacpath/CONTRIBUTING.html</loc></url>
 <url><loc>https://el-cordero.github.io/evacpath/LICENSE-text.html</loc></url>
+<url><loc>https://el-cordero.github.io/evacpath/SECURITY.html</loc></url>
+<url><loc>https://el-cordero.github.io/evacpath/SUPPORT.html</loc></url>
 <url><loc>https://el-cordero.github.io/evacpath/articles/bottlenecks-validation.html</loc></url>
 <url><loc>https://el-cordero.github.io/evacpath/articles/comparing-evacuation-scenarios.html</loc></url>
 <url><loc>https://el-cordero.github.io/evacpath/articles/custom-region-example.html</loc></url>

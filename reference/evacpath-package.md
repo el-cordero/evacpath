@@ -26,6 +26,8 @@ to run the full workflow.
 
 Useful links:
 
+- <https://el-cordero.github.io/evacpath/>
+
 - <https://github.com/el-cordero/evacpath>
 
 - Report bugs at <https://github.com/el-cordero/evacpath/issues>
